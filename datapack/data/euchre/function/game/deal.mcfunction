@@ -23,6 +23,6 @@ function euchre:game/save with storage euchre:tmp q
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/give_hand
 function euchre:game/show_upcard
 
-# Bidding starts here once that milestone (M5) lands.
-scoreboard players set @s euchre.phase 3
-function euchre:table/display/update
+# Bidding arrives in M5; until then trump is the up card's suit.
+scoreboard players set @s euchre.alone -1
+function euchre:play/begin_fixed_trump

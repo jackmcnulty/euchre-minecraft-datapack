@@ -14,6 +14,7 @@ scoreboard objectives remove euchre.dealer
 scoreboard objectives remove euchre.turn
 scoreboard objectives remove euchre.leader
 scoreboard objectives remove euchre.trump
+scoreboard objectives remove euchre.led
 scoreboard objectives remove euchre.upcard
 scoreboard objectives remove euchre.maker
 scoreboard objectives remove euchre.alone

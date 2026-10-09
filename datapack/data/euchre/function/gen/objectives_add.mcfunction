@@ -14,6 +14,7 @@ scoreboard objectives add euchre.dealer dummy
 scoreboard objectives add euchre.turn dummy
 scoreboard objectives add euchre.leader dummy
 scoreboard objectives add euchre.trump dummy
+scoreboard objectives add euchre.led dummy
 scoreboard objectives add euchre.upcard dummy
 scoreboard objectives add euchre.maker dummy
 scoreboard objectives add euchre.alone dummy

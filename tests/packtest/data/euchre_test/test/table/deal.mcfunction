@@ -22,13 +22,13 @@ dummy de use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.sea
 dummy ds use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=2},limit=1]
 dummy dw use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=3},limit=1]
 
-# Full table -> shuffling pause -> deal -> bidding phase. Skip the 2 s pause:
-# the fixture's summoned cushions only last ~100 ticks (see summon_cushion).
+# Full table -> shuffling pause -> deal -> play. Skip the 2 s pause: the
+# fixture's summoned cushions only last ~100 ticks (see summon_cushion).
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2}]
 scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
-await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=3}]
-assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.upcard=20}]
-assert entity @e[type=minecraft:item_display,tag=euchre.card_shown]
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6}]
+# Up card 20 (J of hearts): until bidding exists, trump is its suit (3).
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.upcard=20,euchre.trump=3}]
 
 # Each player holds exactly their 5 cards.
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}

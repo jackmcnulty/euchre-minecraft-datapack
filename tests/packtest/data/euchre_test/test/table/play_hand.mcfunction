@@ -1,0 +1,125 @@
+# @timeout 1200
+# A complete hand from a rigged deck. Hearts are trump (the up card's suit), North
+# leads. Card ids: suit*6 + rank, suits clubs/spades/diamonds/hearts, ranks
+# 9,10,J,Q,K,A. Covers: a real click on a card spot, turn order, refusals,
+# trumping in, both bowers, the left bower counting as trump, and trick counts.
+#
+#   North (hn): A-clubs 5, A-hearts 23, A-spades 11, A-diamonds 17, 9-clubs 0
+#   East  (he): 10-clubs 1, J-hearts 20 (right bower), 9-spades 6, 9-diamonds 12, J-clubs 2
+#   South (hs): Q-clubs 3, J-diamonds 14 (left bower), 10-spades 7, 10-diamonds 13, K-clubs 4
+#   West  (hw): J-spades 8, Q-hearts 21, Q-spades 9, Q-diamonds 15, K-spades 10
+#   kitty: 9-hearts 18 (up card), 10-hearts 19, K-diamonds 16, K-hearts 22
+await not data storage euchre_test:lock {held:1b}
+function euchre_test:lock
+function euchre_test:build_table
+await delay 1
+function euchre_test:place_cushions
+execute unless score #cushions euchre.tmp matches 4 run fail "fixture cushions missing"
+execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
+execute if score #r euchre.tmp matches 0 run fail [{text:"setup refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+data modify storage euchre:debug rig set value [5,23,11,17,0, 1,20,6,12,2, 3,14,7,13,4, 8,21,9,15,10, 18,19,16,22]
+data modify storage euchre:debug dealer set value 3
+
+execute positioned ~0.5 ~1 ~0.5 run dummy hn spawn
+execute positioned ~0.5 ~1 ~0.5 run dummy he spawn
+execute positioned ~0.5 ~1 ~0.5 run dummy hs spawn
+execute positioned ~0.5 ~1 ~0.5 run dummy hw spawn
+dummy hn use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=0},limit=1]
+dummy he use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=1},limit=1]
+dummy hs use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=2},limit=1]
+dummy hw use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=3},limit=1]
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6}]
+# West dealt, so North (left of the dealer) leads. Trump is hearts (3).
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.trump=3,euchre.turn=0}]
+
+# --- Refusals: out of turn, and a card that isn't in your hand ---
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:1}
+assert score #ok euchre.tmp matches 0
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:1}
+assert score #ok euchre.tmp matches 0
+
+# --- Trick 1: North leads A-clubs by actually clicking their spot (it's in the
+# --- selected hotbar slot 0). West has no clubs and trumps with Q-hearts.
+dummy hn use entity @e[type=minecraft:interaction,tag=euchre.spot,scores={euchre.seat=0},limit=1]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.turn=1,euchre.led=0}]
+execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{card:5}}] 0
+assert score #n euchre.tmp matches 0
+assert entity @e[type=minecraft:item_display,tag=euchre.trick_card]
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:1}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"E 10-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:3}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"S Q-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:21}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"W Q-hearts was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,euchre.leader=3,euchre.tricks0=0,euchre.tricks1=1}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trickno=1}]
+
+# --- Trick 2: West leads K-spades; North's A-spades wins.
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:10}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"W K-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:11}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"N A-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:6}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"E 9-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:7}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"S 10-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,euchre.leader=0,euchre.tricks0=1,euchre.tricks1=1}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trickno=2}]
+
+# --- Trick 3: trump led. A-hearts < left bower (J-diamonds) < right bower (J-hearts).
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:23}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"N A-hearts was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:20}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"E J-hearts was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:14}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"S J-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:8}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"W J-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,euchre.leader=1,euchre.tricks0=1,euchre.tricks1=2}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trickno=3}]
+
+# --- Trick 4: East leads diamonds; North's A-diamonds wins.
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:12}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"E 9-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:13}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"S 10-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:15}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"W Q-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:17}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"N A-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,euchre.leader=0,euchre.tricks0=2,euchre.tricks1=2}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trickno=4}]
+
+# --- Trick 5: North leads 9-clubs; South's K-clubs wins. Team A takes 3 tricks.
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:0}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"N 9-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:2}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"E J-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:4}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"S K-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:9}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"W Q-spades was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,euchre.leader=2,euchre.tricks0=3,euchre.tricks1=2}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
+
+# Everyone's hand is empty; the next hand is dealt by North.
+execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{}}] 0
+assert score #n euchre.tmp matches 0
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2,euchre.dealer=0}]
+assert not entity @e[type=minecraft:item_display,tag=euchre.trick_card]
+
+# Clean up.
+execute positioned ~0.5 ~1 ~0.5 run function euchre:remove_table
+dummy hn leave
+dummy he leave
+dummy hs leave
+dummy hw leave
+kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
+forceload remove ~-2 ~-2 ~2 ~2
+function euchre_test:unlock

@@ -18,6 +18,9 @@ data remove storage euchre:defaults setup
 data remove storage euchre:const seat_names
 data remove storage euchre:const seat_teams
 data remove storage euchre:const phase_names
+data remove storage euchre:const suit_symbols
+data remove storage euchre:debug dealer
+advancement revoke @a only euchre:spot_click
 data remove storage euchre:debug rig
 data remove storage euchre:meta schema
 data remove storage euchre:tmp disp

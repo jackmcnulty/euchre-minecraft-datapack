@@ -6,5 +6,6 @@ execute as @e[type=minecraft:item_display,tag=euchre.card_shown] if score @s euc
 execute store result storage euchre:tmp q.tid int 1 run scoreboard players get #tid euchre.tmp
 function euchre:game/clear_record with storage euchre:tmp q
 scoreboard players set @s euchre.phase 0
+scoreboard players set @s euchre.alone -1
 scoreboard players set @s euchre.timer -1
 tellraw @a[distance=..16] [{text:"[Euchre] ",color:"gold"},{text:"The game was stopped because a player left.",color:"yellow"}]

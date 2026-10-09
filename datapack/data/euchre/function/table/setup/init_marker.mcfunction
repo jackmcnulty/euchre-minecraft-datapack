@@ -5,3 +5,8 @@ scoreboard players set @s euchre.seated 0
 scoreboard players set @s euchre.timer -1
 scoreboard players set @s euchre.dealer 0
 scoreboard players set @s euchre.upcard 0
+scoreboard players set @s euchre.trump 0
+scoreboard players set @s euchre.turn 0
+scoreboard players set @s euchre.tricks0 0
+scoreboard players set @s euchre.tricks1 0
+scoreboard players set @s euchre.alone -1
