@@ -125,7 +125,7 @@ def check_mcfunctions() -> None:
                 if not name.startswith("euchre."):
                     err(p, n, "prefix", f"objective '{name}' must start with 'euchre.'")
             for name in RE_TAG.findall(body):
-                if not name.startswith(("euchre.", "$(")):
+                if not name.startswith(("euchre.", "euchre_test.", "$(")):
                     err(p, n, "prefix", f"entity tag '{name}' must start with 'euchre.'")
             for ns in RE_STORAGE.findall(body):
                 if ns not in ("euchre", "euchre_test"):
