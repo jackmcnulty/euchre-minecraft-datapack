@@ -10,3 +10,10 @@ scoreboard players operation #tid euchre.tmp = @s euchre.tid
 scoreboard players set #on euchre.tmp 0
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run scoreboard players add #on euchre.tmp 1
 execute if score #on euchre.tmp < @s euchre.seated run function euchre:table/find_absent
+
+# Phase timer (-1 = off): counts down, and the phase decides what happens at zero.
+execute if score @s euchre.timer matches 1.. run scoreboard players remove @s euchre.timer 1
+execute if score @s euchre.timer matches 0 run function euchre:game/on_timer
+
+# Keep every hand in step with storage (twice a second, only mid-hand).
+execute if score #t10 euchre.g matches 0 if score @s euchre.phase matches 3..9 run function euchre:game/reconcile

@@ -1,6 +1,8 @@
-# @timeout 600
+# @timeout 1200
 # Table setup validation, seating via real cushion clicks, standing, leaving,
 # and removal. One sequential test, because tables are global state.
+await not data storage euchre_test:lock {held:1b}
+function euchre_test:lock
 
 # --- Config validation: every bad request is refused and creates nothing ---
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
@@ -99,3 +101,4 @@ kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
 dummy pn leave
 kill @e[type=minecraft:marker,tag=euchre_test.centre]
 forceload remove ~-2 ~-2 ~2 ~2
+function euchre_test:unlock

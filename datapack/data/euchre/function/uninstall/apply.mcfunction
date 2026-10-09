@@ -1,6 +1,7 @@
 # Everything below is ours alone (euchre-prefixed). Offline players keep their
 # old euchre.* tags, which are harmless once nothing reads them.
 kill @e[tag=euchre.entity]
+execute as @a run function euchre:gen/clear_cards
 tag @a remove euchre.seated
 tag @a remove euchre.sit_check
 tag @a remove euchre.notify
@@ -16,6 +17,8 @@ data remove storage euchre:cards table
 data remove storage euchre:defaults setup
 data remove storage euchre:const seat_names
 data remove storage euchre:const seat_teams
+data remove storage euchre:const phase_names
+data remove storage euchre:debug rig
 data remove storage euchre:meta schema
 data remove storage euchre:tmp disp
 data remove storage euchre:tmp lbl

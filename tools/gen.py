@@ -49,9 +49,25 @@ HOTBAR_SLOTS = 9
 
 # Item used as the base for card items. Must be inert in survival (not placeable,
 # no use action, not a crafting/fuel/brewing ingredient) so that reissuing a
-# card can never create value. To be confirmed by the M0 spike, see
-# docs/verification.md.
+# card can never create value. Verified on 26.3 (docs/verification.md, item h).
 CARD_BASE_ITEM = "minecraft:debug_stick"
+
+# Look of a card until the resource pack lands (M9 switches this to per-card models).
+CARD_ITEM_MODEL = "minecraft:paper"
+
+# Matches any card item, whatever its id or deal. `~` is a partial NBT match, and
+# an empty compound matches any `euchre` compound.
+CARD_PREDICATE = f"{CARD_BASE_ITEM}[custom_data~{{euchre:{{}}}}]"
+
+# The full card item as a macro template: $(id) card id, $(name)/$(color) its
+# label, $(tid) table, $(nonce) the deal it belongs to.
+CARD_ITEM = (
+    f"{CARD_BASE_ITEM}["
+    "custom_data={euchre:{card:$(id),tid:$(tid),nonce:$(nonce)}},"
+    'custom_name={text:"$(name)",color:"$(color)",italic:false},'
+    f'item_model="{CARD_ITEM_MODEL}",'
+    "enchantment_glint_override=false,max_stack_size=1]"
+)
 
 # Item predicate for a "plain" diamond, so renamed, tagged, or otherwise modified
 # diamonds are never counted or taken. Only escrow/collect may use it, and
@@ -181,7 +197,59 @@ def gen_objectives() -> dict[Path, str]:
     }
 
 
-GENERATORS = [gen_card_table, gen_hotbar_helpers, gen_objectives]
+def gen_card_helpers() -> dict[Path, str]:
+    """Everything that creates, counts or removes card items, so the item's
+    definition (CARD_ITEM / CARD_PREDICATE) appears in exactly one place."""
+    gen = DP / "function" / "gen"
+    files = {
+        "give_card": (
+            "# As a player: put a card into hotbar slot $(slot).\n"
+            "# Args: slot, id, name, color, tid, nonce.\n"
+            f"$item replace entity @s hotbar.$(slot) with {CARD_ITEM}\n"
+        ),
+        "card_to_contents": (
+            "# As an item_display: show a card. Args: id, name, color, tid, nonce.\n"
+            f"$item replace entity @s contents with {CARD_ITEM}\n"
+        ),
+        "count_cards": (
+            "# As a player: returns how many card items (of any deal) they carry.\n"
+            f"return run clear @s {CARD_PREDICATE} 0\n"
+        ),
+        "count_card": (
+            "# As a player: returns how many copies of card $(id) from deal $(nonce) they carry.\n"
+            f"$return run clear @s {CARD_BASE_ITEM}[custom_data~{{euchre:{{card:$(id),nonce:$(nonce)}}}}] 0\n"
+        ),
+        "clear_cards": (
+            "# As a player: remove every card item. Cards belong to the table, never to\n"
+            "# the player, so this never touches anything of value.\n"
+            f"clear @s {CARD_PREDICATE}\n"
+        ),
+        "sweep_cards": (
+            "# Card items may only exist in seated players' inventories. Remove any held by\n"
+            "# someone else and any lying on the ground (dropped, thrown, or left over).\n"
+            f"clear @a[tag=!euchre.seated] {CARD_PREDICATE}\n"
+            f"execute as @e[type=minecraft:item] if items entity @s contents {CARD_PREDICATE} run kill @s\n"
+        ),
+    }
+    return {gen / f"{name}.mcfunction": HEADER + body for name, body in files.items()}
+
+
+def gen_deal_split() -> dict[Path, str]:
+    """Split euchre:tmp shuffled (24 card ids) into hands and kitty. Fixed indices
+    make rigged decks in tests predictable: seat s gets shuffled[5s..5s+4] and the
+    kitty is shuffled[20..23], whose first card is turned up."""
+    lines = [
+        HEADER,
+        "# Seat s gets shuffled[5s..5s+4]; the kitty is shuffled[20..23] (kitty[0] is the up card).\n",
+        "data modify storage euchre:tmp game set value {hands:[[],[],[],[]],kitty:[]}\n",
+    ]
+    for i in range(DECK_SIZE):
+        target = f"hands[{i // 5}]" if i < 20 else "kitty"
+        lines.append(f"data modify storage euchre:tmp game.{target} append from storage euchre:tmp shuffled[{i}]\n")
+    return {DP / "function" / "gen" / "deal_split.mcfunction": "".join(lines)}
+
+
+GENERATORS = [gen_card_table, gen_hotbar_helpers, gen_objectives, gen_card_helpers, gen_deal_split]
 
 
 # --------------------------------------------------------------------------- #
