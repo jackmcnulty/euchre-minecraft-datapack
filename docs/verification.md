@@ -27,3 +27,13 @@ also note what the design falls back to.
 | n | Plain-diamond predicate: is a diamond with any added component excluded? | `/clear @s minecraft:diamond[!custom_data,!custom_name,!item_name,!lore,!enchantments,!item_model,!enchantment_glint_override] 0` against plain, renamed, enchanted and `custom_data` diamonds. | M8 | TODO |
 | o | Does a macro with an optional key fail when the key is missing, and does storage `merge` cover it? | `function euchre:setup_custom {wager:10,target:5}` once M1 lands. | M1 | TODO |
 | p | Is `world/datapacks` still the datapack folder after the 26.1 save-layout change? | The CI vanilla smoke job checks this automatically. | CI | ✅ confirmed (CI run 1): the server log shows `Found new data pack file/euchre, loading it automatically` |
+
+## Findings from CI
+
+- **Advancement `entity` conditions need the 26.3 typed form.** A bare entity predicate such as
+  `"entity": {"minecraft:entity_type": "minecraft:cushion"}` fails with `No key type in MapLike[...]`.
+  Advancements are registry-loaded now, so this error **blocks the whole world from loading**, not only that file.
+  The working form wraps it as a loot condition:
+  `"entity": {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": "minecraft:cushion"}}`.
+- **An NBT path can't follow a list index with a compound filter.** `table[17]{suit:2}` is invalid; use `table[{id:17,suit:2}]`.
+- The CI vanilla smoke job loads `spike/` too, so a spike that would break world creation is caught before anyone copies it.
