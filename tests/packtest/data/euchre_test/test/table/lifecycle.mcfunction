@@ -41,7 +41,9 @@ assert score #r euchre.tmp matches 0
 execute positioned ~0.5 ~1 ~0.5 run dummy pn spawn
 dummy pn use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=0},limit=1]
 await entity @a[name=pn,tag=euchre.seated,scores={euchre.seat=0}]
-assert data storage euchre:tables list[0].seats[0]{name:"pn"}
+# (An NBT path can't follow an index with a {filter}, so copy the seat out first.)
+data modify storage euchre_test:t seat set from storage euchre:tables list[0].seats[0]
+assert data storage euchre_test:t seat{name:"pn"}
 assert data storage euchre:tables list[0].seats[0].uuid
 assert score #active euchre.g matches 1..
 
