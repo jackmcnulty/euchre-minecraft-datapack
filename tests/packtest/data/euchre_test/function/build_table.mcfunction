@@ -12,12 +12,6 @@ setblock ~ ~ ~ minecraft:oak_planks
 
 # Cushions are placed the way a builder would: right-clicking the floor with a
 # cushion. (Summoned cushions lack a valid attachment and pop off at their first
-# support check, 100 ticks later.)
+# support check, 100 ticks later.) The builder needs a tick after joining before
+# it can act, so callers then `await delay 1` and run place_cushions.
 execute positioned ~0.5 ~1 ~0.5 run dummy builder spawn
-item replace entity builder weapon.mainhand with minecraft:white_cushion 4
-dummy builder use block ~ ~-1 ~-1 up
-dummy builder use block ~1 ~-1 ~ up
-dummy builder use block ~ ~-1 ~1 up
-dummy builder use block ~-1 ~-1 ~ up
-dummy builder leave
-execute positioned ~0.5 ~ ~0.5 run tag @e[type=minecraft:cushion,distance=..2] add euchre_test.cushion
