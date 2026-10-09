@@ -23,10 +23,6 @@ assert not entity @e[type=minecraft:marker,tag=euchre.table]
 
 # --- Setup with 4 cushions ---
 function euchre_test:build_table
-await delay 1
-function euchre_test:place_cushions
-await delay 1
-function euchre_test:count_cushions
 execute unless score #cushions euchre.tmp matches 4 run fail [{text:"fixture placed "},{score:{name:"#cushions",objective:"euchre.tmp"}},{text:" cushions, expected 4"}]
 summon minecraft:marker ~0.5 ~1 ~0.5 {Tags:["euchre_test.centre"]}
 execute positioned ~0.5 ~1 ~0.5 store result score #n euchre.tmp if entity @e[type=minecraft:cushion,distance=..3]
