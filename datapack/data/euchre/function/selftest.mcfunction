@@ -10,7 +10,8 @@ execute store result score #n euchre.tmp run data get storage euchre:cards table
 execute unless score #n euchre.tmp matches 24 run return fail
 
 # Spot-check the id scheme: card 17 = suit 2 (diamonds), rank 5 (ace).
-execute unless data storage euchre:cards table[17]{suit:2,rank:5} run return fail
+# (An index can't be combined with a compound filter in an NBT path, so match by id.)
+execute unless data storage euchre:cards table[{id:17,suit:2,rank:5}] run return fail
 
 tellraw @a[tag=euchre.notify] {text:"[Euchre] selftest ok",color:"green"}
 return 1

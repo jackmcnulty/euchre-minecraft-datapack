@@ -22,11 +22,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PASS_MARKER = "EUCHRE_SELFTEST_PASS"
-# Log lines that indicate our pack failed to load something.
+# Minecraft log lines (`[time] [thread/LEVEL]: msg`) that indicate our pack failed
+# to load something. Anchored on the log level so JVM warnings that merely contain
+# the checkout path (".../euchre-minecraft-datapack/...") don't count.
 ERROR_PATTERNS = [
-    re.compile(r"(ERROR|WARN).*euchre", re.I),
-    re.compile(r"Failed to load function euchre:", re.I),
-    re.compile(r"Couldn't (load|parse).*euchre", re.I),
+    re.compile(r"/(ERROR|WARN)\]: .*(euchre:|file/euchre)"),
+    re.compile(r"Failed to load function euchre:"),
+    re.compile(r"Whilst parsing command"),
 ]
 
 
