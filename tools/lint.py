@@ -100,7 +100,8 @@ def check_mcfunctions() -> None:
                     err(p, n, "diamonds",
                         f"diamonds may only be cleared in {DIAMOND_TAKE} and given in {DIAMOND_GIVE}")
 
-            if RE_KILL_CUSHION.search(body):
+            # Tests may clean up the cushions their own fixtures summoned.
+            if in_pack and RE_KILL_CUSHION.search(body):
                 err(p, n, "cushions", "cushions belong to the builder and must never be killed")
 
             for ns, name in RE_FUNC_REF.findall(body):

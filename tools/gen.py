@@ -68,6 +68,39 @@ PLAIN_DIAMOND = (
 )
 
 
+# Every scoreboard objective the pack owns, with its criterion. load adds them and
+# uninstall removes them; both lists are generated from here so they can't drift.
+OBJECTIVES = [
+    # Global registers (fake players such as #active) and scratch space
+    ("euchre.g", "dummy"),
+    ("euchre.tmp", "dummy"),
+    # Per player
+    ("euchre.pid", "dummy"),
+    ("euchre.tid", "dummy"),
+    ("euchre.seat", "dummy"),
+    ("euchre.act", "trigger"),
+    ("euchre.left", "minecraft.custom:minecraft.leave_game"),
+    # Per table, stored on the table's marker entity
+    ("euchre.seated", "dummy"),
+    ("euchre.phase", "dummy"),
+    ("euchre.resume", "dummy"),
+    ("euchre.dealer", "dummy"),
+    ("euchre.turn", "dummy"),
+    ("euchre.leader", "dummy"),
+    ("euchre.trump", "dummy"),
+    ("euchre.upcard", "dummy"),
+    ("euchre.maker", "dummy"),
+    ("euchre.alone", "dummy"),
+    ("euchre.trickno", "dummy"),
+    ("euchre.tricks0", "dummy"),
+    ("euchre.tricks1", "dummy"),
+    ("euchre.pts0", "dummy"),
+    ("euchre.pts1", "dummy"),
+    ("euchre.timer", "dummy"),
+    ("euchre.nonce", "dummy"),
+]
+
+
 def card(cid: int) -> dict:
     suit, rank = divmod(cid, len(RANKS))
     s = SUITS[suit]
@@ -135,7 +168,20 @@ def gen_hotbar_helpers() -> dict[Path, str]:
     }
 
 
-GENERATORS = [gen_card_table, gen_hotbar_helpers]
+def gen_objectives() -> dict[Path, str]:
+    add = [HEADER, "# Create every objective. Harmless if they already exist (the command just fails).\n"]
+    rem = [HEADER, "# Remove every objective (used by euchre:uninstall).\n"]
+    for name, criterion in OBJECTIVES:
+        add.append(f"scoreboard objectives add {name} {criterion}\n")
+        rem.append(f"scoreboard objectives remove {name}\n")
+    gen = DP / "function" / "gen"
+    return {
+        gen / "objectives_add.mcfunction": "".join(add),
+        gen / "objectives_remove.mcfunction": "".join(rem),
+    }
+
+
+GENERATORS = [gen_card_table, gen_hotbar_helpers, gen_objectives]
 
 
 # --------------------------------------------------------------------------- #

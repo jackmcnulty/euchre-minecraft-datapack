@@ -1,2 +1,2 @@
-# Per-tick work while any table is active. Filled in by later milestones:
-# seat/vehicle checks, trigger handling, timers, card reconcile, item sweep.
+# Per-tick work while any table has someone seated.
+execute as @e[type=minecraft:marker,tag=euchre.table,scores={euchre.seated=1..}] at @s run function euchre:table/tick
