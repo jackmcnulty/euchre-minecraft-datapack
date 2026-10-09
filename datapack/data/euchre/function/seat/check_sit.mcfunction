@@ -10,6 +10,11 @@ execute if entity @s[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp
 execute if entity @s[tag=euchre.seated] run function euchre:seat/stand
 function euchre:seat/read_vehicle
 
+# A cushion can outlive its table: a seated player who logs out takes the cushion
+# with them (vanilla saves vehicles with their rider), and the table may be
+# removed before they return. Release such an orphan instead of refusing.
+execute unless function euchre:seat/table_exists run return run function euchre:seat/release_orphan
+
 # Only while the table is waiting for players. (Returning to a reserved seat
 # mid-game is part of leaver handling, in a later milestone.)
 scoreboard players set #phase euchre.tmp -1

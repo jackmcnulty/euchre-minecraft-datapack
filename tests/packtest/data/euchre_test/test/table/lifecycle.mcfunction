@@ -78,9 +78,13 @@ dummy pn sneak false
 assert not data storage euchre:tables list[0].seats[0].pid
 
 # --- Disconnecting frees the seat ---
+# Vanilla saves a vehicle with its rider on logout, so pe's cushion leaves too
+# (it would come back with them on rejoin). Only 3 cushions stay at the table.
 dummy pe leave
 await not data storage euchre:tables list[0].seats[1].pid
 assert score #active euchre.g matches 0
+execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion]
+assert score #n euchre.tmp matches 3
 
 # --- Removal: our entities go, the builder's cushions stay (untagged) ---
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:remove_table
@@ -88,7 +92,7 @@ assert score #r euchre.tmp matches 1
 assert not data storage euchre:tables list[0]
 assert not entity @e[tag=euchre.entity]
 execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion,tag=!euchre.seat]
-assert score #n euchre.tmp matches 4
+assert score #n euchre.tmp matches 3
 
 kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
 dummy pn leave

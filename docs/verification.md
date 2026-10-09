@@ -37,3 +37,8 @@ also note what the design falls back to.
   `"entity": {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": "minecraft:cushion"}}`.
 - **An NBT path can't follow a list index with a compound filter.** `table[17]{suit:2}` is invalid; use `table[{id:17,suit:2}]`.
 - The CI vanilla smoke job loads `spike/` too, so a spike that would break world creation is caught before anyone copies it.
+- **A seated player who logs out takes the cushion with them.** Vanilla saves a vehicle with its
+  rider and removes it from the world (the way boats and horses travel with you), and restores both
+  on rejoin. Consequences: a leaver's seat has no cushion until they return; if they never do, place a
+  new cushion and run `euchre:rebind`. A cushion returning to a removed table is released
+  (`seat/release_orphan`). No items are duplicated. Found by the M1 lifecycle test (`dummy leave`).
