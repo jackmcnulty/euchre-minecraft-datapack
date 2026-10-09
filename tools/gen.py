@@ -53,12 +53,18 @@ HOTBAR_SLOTS = 9
 # docs/verification.md.
 CARD_BASE_ITEM = "minecraft:debug_stick"
 
-# Item predicate for a "plain" diamond: one with no added components, so renamed,
-# enchanted, or otherwise tagged diamonds are never counted or taken.
-# Only escrow/collect may use this predicate, and tools/lint.py enforces that.
+# Item predicate for a "plain" diamond, so renamed, tagged, or otherwise modified
+# diamonds are never counted or taken. Only escrow/collect may use it, and
+# tools/lint.py enforces that.
+#
+# Every item carries *default* components (item_name, item_model, lore,
+# enchantments, ...), so `!lore` or `!enchantments` would reject plain diamonds
+# too. Components a plain diamond has by default are matched against their
+# default values instead; components it lacks by default are tested with `!`.
+# Verified in-game on 26.3 (docs/verification.md, item n).
 PLAIN_DIAMOND = (
-    "minecraft:diamond[!custom_data,!custom_name,!item_name,!lore,"
-    "!enchantments,!item_model,!enchantment_glint_override]"
+    "minecraft:diamond[!custom_data,!custom_name,!enchantment_glint_override,"
+    "lore=[],enchantments={}]"
 )
 
 
