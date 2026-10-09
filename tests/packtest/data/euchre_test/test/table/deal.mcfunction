@@ -6,6 +6,8 @@ function euchre_test:lock
 function euchre_test:build_table
 await delay 1
 function euchre_test:place_cushions
+await delay 1
+function euchre_test:count_cushions
 execute unless score #cushions euchre.tmp matches 4 run fail [{text:"fixture placed "},{score:{name:"#cushions",objective:"euchre.tmp"}},{text:" cushions, expected 4"}]
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
 execute if score #r euchre.tmp matches 0 run fail [{text:"setup refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
