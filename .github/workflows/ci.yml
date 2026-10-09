@@ -86,4 +86,4 @@ jobs:
         run: |
           curl -fsSL -o "$RUNNER_TEMP/server.jar" "$VANILLA_SERVER_URL"
           echo "$VANILLA_SERVER_SHA1  $RUNNER_TEMP/server.jar" | sha1sum -c -
-      - run: python tools/smoke_vanilla.py --server-jar "$RUNNER_TEMP/server.jar"
+      - run: python tools/smoke_vanilla.py --server-jar "$RUNNER_TEMP/server.jar" --extra-pack spike

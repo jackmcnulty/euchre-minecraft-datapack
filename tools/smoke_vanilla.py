@@ -26,7 +26,7 @@ PASS_MARKER = "EUCHRE_SELFTEST_PASS"
 # to load something. Anchored on the log level so JVM warnings that merely contain
 # the checkout path (".../euchre-minecraft-datapack/...") don't count.
 ERROR_PATTERNS = [
-    re.compile(r"/(ERROR|WARN)\]: .*(euchre:|file/euchre)"),
+    re.compile(r"/(ERROR|WARN)\]: .*euchre"),
     re.compile(r"Failed to load function euchre:"),
     re.compile(r"Whilst parsing command"),
 ]
@@ -37,6 +37,8 @@ def main() -> int:
     ap.add_argument("--server-jar", required=True, type=Path)
     ap.add_argument("--workdir", default=ROOT / ".ci" / "vanilla", type=Path)
     ap.add_argument("--timeout", default=300, type=int)
+    ap.add_argument("--extra-pack", action="append", default=[], type=Path,
+                    help="additional pack folder to install (e.g. spike/); it must load cleanly too")
     args = ap.parse_args()
 
     work: Path = args.workdir
@@ -44,6 +46,8 @@ def main() -> int:
         shutil.rmtree(work)
     (work / "world" / "datapacks").mkdir(parents=True)
     shutil.copytree(ROOT / "datapack", work / "world" / "datapacks" / "euchre")
+    for extra in args.extra_pack:
+        shutil.copytree(extra, work / "world" / "datapacks" / extra.name)
     (work / "eula.txt").write_text("eula=true\n")
     (work / "server.properties").write_text(
         "level-name=world\nonline-mode=false\nlevel-type=minecraft\\:flat\n"
