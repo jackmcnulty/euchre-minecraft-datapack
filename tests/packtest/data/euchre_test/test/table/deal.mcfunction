@@ -25,8 +25,10 @@ assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.upcard=20
 assert entity @e[type=minecraft:item_display,tag=euchre.card_shown]
 
 # Each player holds exactly their 5 cards.
-execute unless function euchre_test:has_cards {name:"dn",n:5} run fail "dn should hold 5 cards"
-execute unless function euchre_test:has_cards {name:"dw",n:5} run fail "dw should hold 5 cards"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
+execute if score #ok euchre.tmp matches 0 run fail "dn should hold 5 cards"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dw",n:5}
+execute if score #ok euchre.tmp matches 0 run fail "dw should hold 5 cards"
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:0}}] 0
 assert score #n euchre.tmp matches 1
 execute store result score #n euchre.tmp run clear dw minecraft:debug_stick[custom_data~{euchre:{card:19}}] 0
@@ -38,14 +40,16 @@ assert score #n euchre.tmp matches 0
 dummy dn drop
 await not entity @e[type=minecraft:item,distance=..8]
 await delay 2s
-execute unless function euchre_test:has_cards {name:"dn",n:5} run fail "dn should hold 5 cards again"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
+execute if score #ok euchre.tmp matches 0 run fail "dn should hold 5 cards again"
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:0}}] 0
 assert score #n euchre.tmp matches 1
 
 # A smuggled duplicate is removed; the hand is back to exactly 5 distinct cards.
 item replace entity dn hotbar.8 with minecraft:debug_stick[custom_data={euchre:{card:1,tid:1,nonce:1}}]
 await delay 2s
-execute unless function euchre_test:has_cards {name:"dn",n:5} run fail "dn should hold 5 cards again"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
+execute if score #ok euchre.tmp matches 0 run fail "dn should hold 5 cards again"
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:1}}] 0
 assert score #n euchre.tmp matches 1
 
@@ -53,13 +57,15 @@ assert score #n euchre.tmp matches 1
 execute positioned ~0.5 ~1 ~0.5 run dummy dx spawn
 item replace entity dx hotbar.0 with minecraft:debug_stick[custom_data={euchre:{card:3,tid:1,nonce:1}}]
 await delay 2s
-execute unless function euchre_test:has_cards {name:"dx",n:0} run fail "dx should hold no cards"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dx",n:0}
+execute if score #ok euchre.tmp matches 0 run fail "dx should hold no cards"
 dummy dx leave
 
 # A player leaving mid-game stops it and takes everyone's cards back.
 dummy dw leave
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=0}]
-execute unless function euchre_test:has_cards {name:"dn",n:0} run fail "dn should hold no cards after the abort"
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:0}
+execute if score #ok euchre.tmp matches 0 run fail "dn should hold no cards after the abort"
 assert not entity @e[type=minecraft:item_display,tag=euchre.card_shown]
 
 # Clean up.
