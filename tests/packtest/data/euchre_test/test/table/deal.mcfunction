@@ -42,7 +42,7 @@ dummy dn drop
 await not entity @e[type=minecraft:item,distance=..8]
 await delay 2s
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
-execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}}]
+execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}},{text:"; cushions="},{selector:"@e[type=minecraft:cushion,tag=euchre_test.cushion]"}]
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:0}}] 0
 assert score #n euchre.tmp matches 1
 
@@ -50,7 +50,7 @@ assert score #n euchre.tmp matches 1
 item replace entity dn hotbar.8 with minecraft:debug_stick[custom_data={euchre:{card:1,tid:1,nonce:1}}]
 await delay 2s
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
-execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}}]
+execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}},{text:"; cushions="},{selector:"@e[type=minecraft:cushion,tag=euchre_test.cushion]"}]
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:1}}] 0
 assert score #n euchre.tmp matches 1
 
