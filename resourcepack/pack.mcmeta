@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": [
+      { "text": "Euchre", "color": "gold" },
+      { "text": " — card art", "color": "gray" }
+    ],
+    "min_format": [97, 1],
+    "max_format": 97
+  }
+}

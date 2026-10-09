@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": [
+      { "text": "Euchre", "color": "gold" },
+      { "text": " — rules-enforcing card table", "color": "gray" }
+    ],
+    "min_format": [121, 0],
+    "max_format": 121
+  }
+}

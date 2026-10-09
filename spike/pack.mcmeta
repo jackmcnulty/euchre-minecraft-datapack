@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "Euchre M0 verification spike. Throwaway test world only; never install on a real server.",
+    "min_format": [121, 0],
+    "max_format": 121
+  }
+}

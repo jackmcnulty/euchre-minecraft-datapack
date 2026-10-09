@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "Euchre test suite (PackTest). CI only; never ship this pack.",
+    "min_format": [121, 0],
+    "max_format": 121
+  }
+}
