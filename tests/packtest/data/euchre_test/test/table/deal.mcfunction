@@ -22,7 +22,10 @@ dummy de use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.sea
 dummy ds use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=2},limit=1]
 dummy dw use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=3},limit=1]
 
-# Full table -> shuffling pause -> deal -> bidding phase.
+# Full table -> shuffling pause -> deal -> bidding phase. Skip the 2 s pause:
+# the fixture's summoned cushions only last ~100 ticks (see summon_cushion).
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2}]
+scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=3}]
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.upcard=20}]
 assert entity @e[type=minecraft:item_display,tag=euchre.card_shown]
@@ -42,7 +45,8 @@ assert score #n euchre.tmp matches 0
 # Dropping a card: the item on the ground is removed and the card comes back.
 dummy dn drop
 await not entity @e[type=minecraft:item,distance=..8]
-await delay 2s
+# Reconcile runs every 10 ticks.
+await delay 11
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}},{text:"; cushions="},{selector:"@e[type=minecraft:cushion,tag=euchre_test.cushion]"}]
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:0}}] 0
@@ -50,20 +54,17 @@ assert score #n euchre.tmp matches 1
 
 # A smuggled duplicate is removed; the hand is back to exactly 5 distinct cards.
 item replace entity dn hotbar.8 with minecraft:debug_stick[custom_data={euchre:{card:1,tid:1,nonce:1}}]
-await delay 2s
+await delay 11
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:5}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 cards again, has "},{score:{name:"#hc",objective:"euchre.tmp"}},{text:"; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:"; seated="},{selector:"@a[tag=euchre.seated]"},{text:"; table seated count="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.seated"}},{text:"; cushions="},{selector:"@e[type=minecraft:cushion,tag=euchre_test.cushion]"}]
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:1}}] 0
 assert score #n euchre.tmp matches 1
 
-# Cushions survive their 100-tick support check.
-execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion,distance=..3]
-assert score #n euchre.tmp matches 4
-
 # Someone who is not seated can't keep a card.
 execute positioned ~0.5 ~1 ~0.5 run dummy dx spawn
 item replace entity dx hotbar.0 with minecraft:debug_stick[custom_data={euchre:{card:3,tid:1,nonce:1}}]
-await delay 2s
+# The stray sweep runs every 20 ticks.
+await delay 21
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dx",n:0}
 execute if score #ok euchre.tmp matches 0 run fail "dx should hold no cards"
 dummy dx leave

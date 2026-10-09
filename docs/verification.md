@@ -42,3 +42,10 @@ also note what the design falls back to.
   on rejoin. Consequences: a leaver's seat has no cushion until they return; if they never do, place a
   new cushion and run `euchre:rebind`. A cushion returning to a removed table is released
   (`seat/release_orphan`). No items are duplicated. Found by the M1 lifecycle test (`dummy leave`).
+- **Summoned cushions don't last.** A cushion is block-attached. `/summon` must give `Pos` together with
+  `block_pos`, or the game logs "Block-attached entity at invalid position", because the data is loaded
+  before the entity moves. Even with both set, summoned cushions disappear at their first support check,
+  about 100 ticks after loading; cushions placed by players don't. The datapack never summons cushions,
+  so play is unaffected, but table tests keep their seated phase within 100 ticks. **Open question for a
+  future spike:** what makes a placed cushion valid that a summoned one lacks (compare `/data get entity`
+  of a placed cushion).
