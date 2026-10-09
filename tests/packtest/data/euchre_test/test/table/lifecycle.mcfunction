@@ -28,7 +28,9 @@ execute store result score #n euchre.tmp if entity @e[type=minecraft:interaction
 assert score #n euchre.tmp matches 4
 execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre.seat]
 assert score #n euchre.tmp matches 4
-assert entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=0},x=0,dx=0,z=-1,dz=0,limit=1]
+# The north cushion (-Z of the table) became seat 0, the east one seat 1.
+execute positioned ~0.5 ~ ~-0.5 run assert entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=0},distance=..0.6]
+execute positioned ~1.5 ~ ~0.5 run assert entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=1},distance=..0.6]
 execute store result score #n euchre.tmp if entity @e[type=minecraft:text_display,tag=euchre.seat_label]
 assert score #n euchre.tmp matches 4
 assert entity @e[type=minecraft:text_display,tag=euchre.board]
