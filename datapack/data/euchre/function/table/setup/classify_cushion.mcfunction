@@ -1,8 +1,8 @@
 # As a candidate cushion: work out which side of the table it is on and store
 # it in euchre.seat (0=N, 1=E, 2=S, 3=W). Minecraft's north is -Z and east is +X.
 # Uses #mx/#mz (table centre) from load_center.
-execute store result score #dx euchre.tmp run data get entity @s Pos[0] 100
-execute store result score #dz euchre.tmp run data get entity @s Pos[2] 100
+execute store result score #dx euchre.tmp run data get entity @s Pos[0] 10
+execute store result score #dz euchre.tmp run data get entity @s Pos[2] 10
 scoreboard players operation #dx euchre.tmp -= #mx euchre.tmp
 scoreboard players operation #dz euchre.tmp -= #mz euchre.tmp
 

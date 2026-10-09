@@ -8,6 +8,8 @@ Rules (each one protects an invariant from the design docs):
   diamonds    only escrow/collect may remove diamonds and only escrow/deliver may
               give them (the escrow choke points; see docs/escrow.md)
   cushions    cushions are player-owned: nothing may kill them
+  overflow    entity positions are never scaled by more than 10 into a score
+  syntax      quotes and brackets balance on every command line
   refs        every `function euchre:...` reference resolves to a file
 
 Usage: python tools/lint.py   (exit 1 on any violation)
@@ -40,6 +42,9 @@ RE_TAG = re.compile(r"\btag \S+ (?:add|remove) (\S+)")
 RE_STORAGE = re.compile(r"\bstorage ([a-z0-9_.-]+):")
 RE_FUNC_REF = re.compile(r"\bfunction (euchre(?:_test)?):([a-z0-9_/.-]+)")
 RE_KILL_CUSHION = re.compile(r"\bkill\b.*cushion")
+# `data get ... Pos[i] <scale>` into a 32-bit score: coordinates reach +-30,000,000,
+# so any scale above 10 can overflow (x100 breaks past ~21.4M blocks).
+RE_POS_SCALE = re.compile(r"\bPos\[\d\]\s+(\d+(?:\.\d+)?)")
 
 errors: list[str] = []
 
@@ -125,6 +130,10 @@ def check_mcfunctions() -> None:
             for ns in RE_STORAGE.findall(body):
                 if ns not in ("euchre", "euchre_test"):
                     err(p, n, "prefix", f"storage namespace '{ns}' must be euchre")
+
+            for scale in RE_POS_SCALE.findall(body):
+                if float(scale) > 10:
+                    err(p, n, "overflow", f"Pos scale {scale} can overflow a score far from spawn; use 10 or less")
 
             if in_pack and RE_DIAMOND.search(body):
                 allowed = (
