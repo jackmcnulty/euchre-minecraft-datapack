@@ -21,8 +21,11 @@ assert not entity @e[type=minecraft:marker,tag=euchre.table]
 
 # --- Setup with 4 cushions ---
 function euchre_test:build_table
+execute positioned ~0.5 ~1 ~0.5 store result score #n euchre.tmp if entity @e[type=minecraft:cushion,distance=..3]
+execute unless score #n euchre.tmp matches 4 run fail [{text:"expected 4 cushions near the table, found "},{score:{name:"#n",objective:"euchre.tmp"}}]
+data modify storage euchre:tmp last_error set value ""
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup_custom {wager:0,target:7}
-assert score #r euchre.tmp matches 1
+execute if score #r euchre.tmp matches 0 run fail [{text:"setup refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
 assert data storage euchre:tables list[0].config{wager:0,target:7,stick_dealer:1b,grace_s:120}
 execute store result score #n euchre.tmp if entity @e[type=minecraft:interaction,tag=euchre.spot]
 assert score #n euchre.tmp matches 4

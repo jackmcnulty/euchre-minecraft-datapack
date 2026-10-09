@@ -1,4 +1,5 @@
 # Undo a half-finished setup and explain the expected layout.
+data modify storage euchre:tmp last_error set value "cushions"
 kill @e[type=minecraft:marker,tag=euchre.new]
 scoreboard players reset @e[type=minecraft:cushion,tag=euchre.candidate] euchre.seat
 tag @e[type=minecraft:cushion,tag=euchre.candidate] remove euchre.candidate
