@@ -69,6 +69,36 @@ def function_exists(ns: str, name: str) -> bool:
     return root is not None and (root / f"{name}.mcfunction").is_file()
 
 
+def balance_problem(line: str) -> str | None:
+    """Every command is one line, so its quotes and brackets must balance on that
+    line. Catches a string accidentally split across lines (which Minecraft reports
+    only at load time, by refusing the whole function)."""
+    stack: list[str] = []
+    pairs = {"}": "{", "]": "[", ")": "("}
+    quote: str | None = None
+    escaped = False
+    for ch in line:
+        if quote:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+        elif ch in "{[(":
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return f"unbalanced '{ch}'"
+    if quote:
+        return "unterminated string"
+    if stack:
+        return f"unclosed '{stack[-1]}'"
+    return None
+
+
 def check_mcfunctions() -> None:
     files = list((DP_DATA / "euchre").rglob("*.mcfunction"))
     files += list((ROOT / "tests" / "packtest").rglob("*.mcfunction"))
@@ -81,6 +111,10 @@ def check_mcfunctions() -> None:
             if not line or line.startswith("#"):
                 continue
             body = line[1:] if line.startswith("$") else line  # macro lines
+
+            problem = balance_problem(body)
+            if problem:
+                err(p, n, "syntax", problem)
 
             for name in RE_OBJECTIVE.findall(body):
                 if not name.startswith("euchre."):
