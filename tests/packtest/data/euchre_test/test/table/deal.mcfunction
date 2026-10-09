@@ -53,6 +53,10 @@ execute if score #ok euchre.tmp matches 0 run fail [{text:"dn should hold 5 card
 execute store result score #n euchre.tmp run clear dn minecraft:debug_stick[custom_data~{euchre:{card:1}}] 0
 assert score #n euchre.tmp matches 1
 
+# Cushions survive their 100-tick support check.
+execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion,distance=..3]
+assert score #n euchre.tmp matches 4
+
 # Someone who is not seated can't keep a card.
 execute positioned ~0.5 ~1 ~0.5 run dummy dx spawn
 item replace entity dx hotbar.0 with minecraft:debug_stick[custom_data={euchre:{card:3,tid:1,nonce:1}}]
