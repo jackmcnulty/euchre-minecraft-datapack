@@ -10,6 +10,9 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - `euchre:remove_table`, `euchre:rebind`, `euchre:uninstall`. Cushions are always released, never killed.
 - Setup failures report what was found. Refusal reasons are kept in `euchre:tmp last_error`.
 - Lint rules for quote and bracket balance per line, and for position-scale overflow.
+- **Dealing:** a full free table starts a game. It shuffles (Fisher-Yates with `/random`), deals 5 cards into each player's empty hotbar slots, and shows the up card on the table.
+- **Hand integrity:** card items carry a per-deal id. Every 10 ticks each hand is reconciled against storage, so dropped, duplicated, stale and smuggled cards are fixed. Stray cards anywhere else are swept every second.
+- All card-item commands are generated from one item definition in `tools/gen.py`.
 - Repository skeleton: datapack and resource pack (`pack.mcmeta` for 26.3, formats 121.0 / 97.1).
 - Idempotent `euchre:load`, near-zero-cost `euchre:tick`, `euchre:selftest`.
 - `tools/gen.py` (generated card table, hotbar helpers), `tools/lint.py`, `tools/build.py`.
