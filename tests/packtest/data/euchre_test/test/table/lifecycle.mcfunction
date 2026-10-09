@@ -98,3 +98,4 @@ assert score #n euchre.tmp matches 3
 kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
 dummy pn leave
 kill @e[type=minecraft:marker,tag=euchre_test.centre]
+forceload remove ~-2 ~-2 ~2 ~2
