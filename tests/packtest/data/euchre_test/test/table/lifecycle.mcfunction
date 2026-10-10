@@ -112,6 +112,16 @@ execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag
 assert score #n euchre.tmp matches 3
 # Released cushions are ordinary (breakable) again.
 assert not entity @e[type=minecraft:cushion,tag=euchre_test.cushion,nbt={Invulnerable:1b}]
+# ...and the same punch that couldn't break a seat now does (so the protection
+# check above isn't passing just because punches miss).
+execute positioned ~0.5 ~1 ~0.5 run dummy pp spawn
+tp pp ~0.5 ~1 ~0.5
+dummy pp attack @e[type=minecraft:cushion,tag=euchre_test.cushion,limit=1,sort=nearest]
+await delay 2
+execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion]
+assert score #n euchre.tmp matches 2
+dummy pp leave
+kill @e[type=minecraft:item,distance=..4]
 
 kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
 dummy pn leave
