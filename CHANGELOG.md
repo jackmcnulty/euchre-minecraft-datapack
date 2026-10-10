@@ -4,6 +4,10 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-10
+
+Pre-release with playtest fixes: hands end early once decided, more readable cards, and protected seat cushions.
+
 ### Fixed
 - Cards on the table appeared mirrored. They now lie face up and turn to read upright for the player who played them; the up card faces the first bidder.
 - Seat labels sat on the tabletop over the played cards. They now float above each cushion. Existing tables need `remove_table` and setup again to move them.
