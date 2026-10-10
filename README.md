@@ -2,7 +2,7 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: early development (M5 done: tables, seating, dealing, bidding, and rules-enforced trick play).** Scoring and game end come next. See the [roadmap](#roadmap).
+> **Status: free tables are fully playable (M6).** Going alone, wagers, and card art are next. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
 
@@ -46,7 +46,9 @@ The config is fixed while the table exists. To change it, remove the table and s
 
 **Playing:** on your turn, hold a card and right-click the spot on the table in front of you. The card lies face up there; when everyone has played, the best card takes the trick and its player leads next. You must follow the led suit if you can, and the game refuses an illegal card with a message. Suits are effective suits: the left bower counts as trump.
 
-For now, a player leaving mid-game stops the game. A grace period to return arrives with leaver handling.
+**Scoring:** the makers score 1 point for 3 or 4 tricks and 2 for all five (4 if alone). If they take fewer than 3, they're *euchred* and the other team scores 2. The first team to the table's `target` wins. After a short pause a new game starts if all four players are still seated.
+
+**Leaving mid-game:** if a player stands up or disconnects, the game pauses and their seat is held. They resume by sitting back down on their cushion, and their cards come back. If they aren't back within `grace_s` seconds (default 120), their team forfeits. If players from both teams are away, the game is cancelled instead. A server restart works the same way: the game resumes when everyone is back.
 
 ### Operator commands
 | Command | What it does |
