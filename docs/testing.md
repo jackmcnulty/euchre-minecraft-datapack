@@ -51,6 +51,10 @@ Then mirror the CI job:
 2. Copy `datapack/` and `tests/packtest/` into `world/datapacks/`.
 3. Run `java -Dpacktest.auto -jar fabric-server.jar nogui`.
 
+## Singleplayer validation
+
+Everything that can be checked alone, step by step: [singleplayer-validation.md](singleplayer-validation.md).
+
 ## Manual QA checklist
 
 These need real clients, so they aren't automated. Run through them before a

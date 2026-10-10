@@ -4,6 +4,12 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 
 ## [Unreleased]
 
+### Fixed
+- A player returning to a seat the table never saw them leave (the server stopped while they were seated, e.g. quitting single player) was counted twice.
+
+### Added
+- docs/singleplayer-validation.md: a step-by-step solo validation guide.
+
 ## [0.9.0] - 2026-10-09
 
 First public pre-release, for playtesting before 1.0.0. Minecraft Java Edition 26.3 (data pack format 121, resource pack format 97.1). Feature-complete; 1.0.0 follows once the manual QA checklist in docs/testing.md has been run with real players.

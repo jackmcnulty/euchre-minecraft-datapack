@@ -12,23 +12,25 @@ Note: in single player with cheats on, you're an operator, so admin commands wor
 
 ## 0. Set up a test world
 
-1. Download `euchre-datapack-0.9.0.zip` and `euchre-resourcepack-0.9.0.zip` from the
-   [v0.9.0 release](https://github.com/jackmcnulty/euchre-minecraft-datapack/releases/tag/v0.9.0).
-2. Put `euchre-resourcepack-0.9.0.zip` in `%APPDATA%\.minecraft\resourcepacks\`.
+1. Get the two zips: either build them from the repo (`python tools/build.py --version local`
+   → `dist/euchre-datapack-local.zip` and `dist/euchre-resourcepack-local.zip`), or
+   download the latest release's zips. Below they're called *the datapack zip* and
+   *the resource pack zip*.
+2. Put the resource pack zip in `%APPDATA%\.minecraft\resourcepacks\`.
    In the game: **Options → Resource Packs**, move *Euchre — card art* to the
    right (Selected) side, then click Done.
 3. **Singleplayer → Create New World**:
    - Name: `euchre-test`
    - Game Mode **Creative**, Allow Commands **ON**
    - More → World Type **Superflat**
-   - **Data Packs → Open Pack Folder**: copy `euchre-datapack-0.9.0.zip` in (don't
+   - **Data Packs → Open Pack Folder**: copy the datapack zip in (don't
      unzip it), move it to **Selected**, then click Done.
    - Create.
 4. Optional: `/gamerule doDaylightCycle false` and `/time set day`.
 
 ## 1. Installation and health
 
-- [ ] **1.1** Run `/datapack list enabled`. The list includes `file/euchre-datapack-0.9.0.zip`.
+- [ ] **1.1** Run `/datapack list enabled`. The list includes `file/euchre-datapack-<version>.zip`.
 - [ ] **1.2** Run `/execute if function euchre:selftest run say SELFTEST OK`. Chat shows `[<you>] SELFTEST OK`.
 - [ ] **1.3** Run `/scoreboard objectives list`. The list has many `euchre.*` objectives (`euchre.g`, `euchre.phase`, `euchre.act`, …).
 - [ ] **1.4** Run `/reload`, then repeat 1.2. It still says SELFTEST OK, and there are no red errors. (Reloading must never reset anything.)
@@ -87,7 +89,7 @@ Build at least 10 blocks from where you spawned.
 ## 6. Reload, quit and rejoin while seated
 
 - [ ] **6.1** While seated, run `/reload`. You stay seated, with no errors, and the board still says `Players 1/4`.
-- [ ] **6.2** While seated, **Save and Quit to Title**, then reopen the world. You're back on the cushion and seated. The label shows your name, and **the board says `Players 1/4`, not 2/4** (this checks the double-count fix).
+- [ ] **6.2** While seated, **Save and Quit to Title**, then reopen the world. You're back on the cushion and seated. The label shows your name, and **the board says `Players 1/4`, not 2/4**. This checks a fix made after v0.9.0, so v0.9.0's zip shows 2/4.
 - [ ] **6.3** Sneak to stand. The board says `Players 0/4`.
 - [ ] **6.4** Sit again, then close the game with **Alt+F4** (simulating a crash), relaunch and reopen the world. Same result as 6.2: seated, `Players 1/4`.
 
@@ -132,8 +134,8 @@ This checks the score-overflow fix.
 
 - [ ] **10.1** Build or keep any table (or none) and sit on it. Run `/function euchre:uninstall`. Chat: *"Uninstalled. Now run /datapack disable…"*. You're stood up, the displays are gone, and the cushions remain.
 - [ ] **10.2** Run `/scoreboard objectives list`. There are no `euchre.*` objectives left.
-- [ ] **10.3** Run `/datapack disable "file/euchre-datapack-0.9.0.zip"`. Then `/datapack list enabled` no longer shows it.
-- [ ] **10.4** Optional: reinstall with `/datapack enable "file/euchre-datapack-0.9.0.zip"`, then repeat 1.2. SELFTEST OK.
+- [ ] **10.3** Run `/datapack disable "file/euchre-datapack-<version>.zip"` (the exact name is in `/datapack list`). Then `/datapack list enabled` no longer shows it.
+- [ ] **10.4** Optional: reinstall with `/datapack enable "file/euchre-datapack-<version>.zip"`, then repeat 1.2. SELFTEST OK.
 
 ---
 
