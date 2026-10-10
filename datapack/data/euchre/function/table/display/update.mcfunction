@@ -32,4 +32,6 @@ function euchre:table/display/board with storage euchre:tmp disp
 scoreboard players set #lturn euchre.tmp -1
 execute if score @s euchre.phase matches 3..6 run scoreboard players operation #lturn euchre.tmp = @s euchre.turn
 scoreboard players operation #lalone euchre.tmp = @s euchre.alone
+scoreboard players set #ldealer euchre.tmp -1
+execute if score @s euchre.phase matches 2..10 run scoreboard players operation #ldealer euchre.tmp = @s euchre.dealer
 execute as @e[type=minecraft:text_display,tag=euchre.seat_label] if score @s euchre.tid = #tid euchre.tmp run function euchre:table/display/label

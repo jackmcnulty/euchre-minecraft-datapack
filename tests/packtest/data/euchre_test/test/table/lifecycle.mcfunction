@@ -42,6 +42,8 @@ execute positioned ~0.5 ~ ~-0.5 run assert entity @e[type=minecraft:cushion,tag=
 execute positioned ~1.5 ~ ~0.5 run assert entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=1},distance=..0.6]
 execute store result score #n euchre.tmp if entity @e[type=minecraft:text_display,tag=euchre.seat_label]
 assert score #n euchre.tmp matches 4
+# Labels float above the cushions, off the tabletop: the north one is above the north cushion.
+execute positioned ~0.5 ~2.4 ~-0.5 run assert entity @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0},distance=..0.3]
 assert entity @e[type=minecraft:text_display,tag=euchre.board]
 
 # A second table is refused.

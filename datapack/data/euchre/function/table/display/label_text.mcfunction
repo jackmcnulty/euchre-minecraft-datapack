@@ -1,1 +1,1 @@
-$data modify entity @s text set value [{text:"$(mark)",color:"yellow",bold:true},{text:"$(dir) · $(team)\n",color:"gold",bold:false},{text:"$(name)",color:"$(color)",bold:false},{text:"$(note)",color:"gray",bold:false}]
+$data modify entity @s text set value [{text:"$(mark)",color:"yellow",bold:true},{text:"$(dir) · $(team)\n",color:"gold",bold:false},{text:"$(name)",color:"$(color)",bold:false},{text:"$(note)",color:"gray",bold:false},{text:"$(dealer_note)",color:"yellow",bold:true}]

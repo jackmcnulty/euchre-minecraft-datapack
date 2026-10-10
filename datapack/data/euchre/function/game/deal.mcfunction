@@ -23,6 +23,10 @@ function euchre:game/save with storage euchre:tmp q
 # Cards into hotbars, and the up card face up in the middle of the table.
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/give_hand
 function euchre:game/show_upcard
+# Say who dealt.
+execute store result storage euchre:tmp q.seat int 1 run scoreboard players get @s euchre.dealer
+function euchre:play/seat_name with storage euchre:tmp q
+tellraw @a[distance=..16] [{text:"[Euchre] ",color:"gold"},{storage:"euchre:tmp",nbt:"name",color:"white"},{text:" deals. ",color:"gray"},{text:"(Dealer is shown on the seat labels.)",color:"dark_gray"}]
 playsound minecraft:item.book.put block @a[distance=..16] ~ ~ ~ 1 0.8
 
 function euchre:bid/begin

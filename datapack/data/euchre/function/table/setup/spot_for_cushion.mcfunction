@@ -17,3 +17,6 @@ scoreboard players operation #seat euchre.tmp = @s euchre.seat
 execute store result storage euchre:tmp spot.ox double 0.1 run scoreboard players get #dx euchre.tmp
 execute store result storage euchre:tmp spot.oz double 0.1 run scoreboard players get #dz euchre.tmp
 execute at @e[type=minecraft:marker,tag=euchre.new,limit=1] run function euchre:table/setup/summon_spot with storage euchre:tmp spot
+# The seat label floats above the cushion (over the seated player), clear of
+# the tabletop where the cards are played.
+execute at @s positioned ~ ~2.4 ~ summon minecraft:text_display run function euchre:table/setup/init_label

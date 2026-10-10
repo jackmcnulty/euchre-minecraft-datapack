@@ -32,7 +32,10 @@ dummy hw use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.sea
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2}]
 scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=3}]
-# West dealt, so North (left of the dealer) bids first.
+# West dealt, so North (left of the dealer) bids first. West's label says so.
+execute unless entity @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3}] run fail "no label for West"
+execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3}] unless data entity @s text[{text:"\nDealer"}] run fail "the dealer's seat label should say Dealer"
+execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0}] if data entity @s text[{text:"\nDealer"}] run fail "only the dealer's label says Dealer"
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.turn=0}]
 
 # --- Bidding: North orders up hearts by pressing the chat button (/trigger) ---
@@ -63,6 +66,11 @@ assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.turn=1,eu
 execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{card:5}}] 0
 assert score #n euchre.tmp matches 0
 assert entity @e[type=minecraft:item_display,tag=euchre.trick_card]
+# North's card lies face up, turned so its top points at the table centre
+# (south, yaw 0): it reads upright from North's seat.
+assert entity @e[type=minecraft:item_display,tag=euchre.trick_card,y_rotation=-1..1]
+execute store result score #n euchre.tmp run data get entity @e[type=minecraft:item_display,tag=euchre.trick_card,limit=1] transformation.left_rotation[0] 1000
+assert score #n euchre.tmp matches 700..710
 # East holds a club, so trumping with the right bower is refused.
 execute store success score #ok euchre.tmp as he run function euchre:play/try {card:20}
 assert score #ok euchre.tmp matches 0

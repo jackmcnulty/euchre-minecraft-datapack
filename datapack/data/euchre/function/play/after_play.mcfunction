@@ -10,7 +10,11 @@ execute store result storage euchre:tmp gc.id int 1 run scoreboard players get #
 execute store result storage euchre:tmp gc.tid int 1 run scoreboard players get #tid euchre.tmp
 data modify storage euchre:tmp gc.nonce set from storage euchre:tmp game.nonce
 function euchre:card/lookup with storage euchre:tmp gc
-execute as @e[type=minecraft:interaction,tag=euchre.spot] if score @s euchre.tid = #tid euchre.tmp if score @s euchre.seat = #seat euchre.tmp at @s positioned ~ ~0.02 ~ summon minecraft:item_display run function euchre:card/init_shown
+# Face it towards the table centre, so its top points away from the player who
+# played it and it reads upright from their seat.
+tag @s add euchre.facing_target
+execute as @e[type=minecraft:interaction,tag=euchre.spot] if score @s euchre.tid = #tid euchre.tmp if score @s euchre.seat = #seat euchre.tmp at @s positioned ~ ~0.02 ~ facing entity @e[type=minecraft:marker,tag=euchre.facing_target,limit=1] feet summon minecraft:item_display run function euchre:card/init_shown
+tag @s remove euchre.facing_target
 execute as @e[type=minecraft:item_display,tag=euchre.card_new] run function euchre:gen/card_to_contents with storage euchre:tmp gc
 tag @e[type=minecraft:item_display,tag=euchre.card_new] add euchre.trick_card
 tag @e[type=minecraft:item_display,tag=euchre.card_new] remove euchre.card_new
