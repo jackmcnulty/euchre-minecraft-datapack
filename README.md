@@ -2,7 +2,7 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: free tables are fully playable (M6).** Going alone, wagers, and card art are next. See the [roadmap](#roadmap).
+> **Status: free tables are fully playable, including going alone (M7).** Wagers and card art are next. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
 
@@ -42,6 +42,7 @@ The config is fixed while the table exists. To change it, remove the table and s
 
 **Cards:** when all four seats are filled on a free table, the cards are shuffled and each player is dealt 5. The table's state is the source of truth: a card you drop or pass to someone comes back to your hand, and duplicates or leftover cards disappear. **Bidding:** when it's your turn to bid, clickable buttons appear in your chat, and only you can use them.
 - **Round 1:** order up the up card's suit or pass. If someone orders up, the dealer picks up the up card and discards one by holding it and right-clicking their spot.
+- **Going alone:** both rounds have "alone" buttons. The maker's partner sits out the hand and holds no cards, and tricks have three cards. If the partner sitting out is the dealer, the up card is turned down instead of picked up.
 - **Round 2:** if everyone passed, name any other suit or pass. With `stick_dealer` on (the default), the dealer can't pass; with it off, four passes mean a redeal.
 
 **Playing:** on your turn, hold a card and right-click the spot on the table in front of you. The card lies face up there; when everyone has played, the best card takes the trick and its player leads next. You must follow the led suit if you can, and the game refuses an illegal card with a message. Suits are effective suits: the left bower counts as trump.
