@@ -20,5 +20,10 @@ function euchre:card/load_hand with storage euchre:tmp q
 function euchre:rules/hand_index
 execute if score #idx euchre.tmp matches -1 run return run function euchre:util/fail {msg:"That card isn't in your hand."}
 
+# Follow suit if you can (hand_index consumed the hand list, so reload it).
+function euchre:card/load_hand with storage euchre:tmp q
+execute unless data storage euchre:tmp game.trick[0] run scoreboard players set #led euchre.tmp -1
+execute unless function euchre:rules/is_legal run return run function euchre:play/refuse_follow
+
 function euchre:play/commit
 return 1

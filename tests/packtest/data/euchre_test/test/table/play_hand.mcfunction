@@ -1,7 +1,8 @@
 # @timeout 1200
 # A complete hand from a rigged deck. Hearts are trump (the up card's suit), North
 # leads. Card ids: suit*6 + rank, suits clubs/spades/diamonds/hearts, ranks
-# 9,10,J,Q,K,A. Covers: a real click on a card spot, turn order, refusals,
+# 9,10,J,Q,K,A. Covers: a real click on a card spot, turn order, refusals
+# (out of turn, not your card, not following suit),
 # trumping in, both bowers, the left bower counting as trump, and trick counts.
 #
 #   North (hn): A-clubs 5, A-hearts 23, A-spades 11, A-diamonds 17, 9-clubs 0
@@ -47,6 +48,9 @@ assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.turn=1,eu
 execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{card:5}}] 0
 assert score #n euchre.tmp matches 0
 assert entity @e[type=minecraft:item_display,tag=euchre.trick_card]
+# East holds a club, so trumping with the right bower is refused.
+execute store success score #ok euchre.tmp as he run function euchre:play/try {card:20}
+assert score #ok euchre.tmp matches 0
 execute store success score #ok euchre.tmp as he run function euchre:play/try {card:1}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"E 10-clubs was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
 execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:3}
@@ -75,6 +79,9 @@ execute store success score #ok euchre.tmp as hn run function euchre:play/try {c
 execute if score #ok euchre.tmp matches 0 run fail [{text:"N A-hearts was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
 execute store success score #ok euchre.tmp as he run function euchre:play/try {card:20}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"E J-hearts was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+# Trump led: South must follow with the left bower (J-diamonds), not 10-spades.
+execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:7}
+assert score #ok euchre.tmp matches 0
 execute store success score #ok euchre.tmp as hs run function euchre:play/try {card:14}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"S J-diamonds was refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
 execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:8}

@@ -284,6 +284,13 @@ def ref_power(cid: int, trump: int, led: int) -> int:
     return 0
 
 
+def ref_is_legal(cid: int, hand: list[int], trump: int, led: int | None) -> bool:
+    """Follow suit (by effective suit) if you can; anything goes when leading."""
+    if led is None or ref_eff_suit(cid, trump) == led:
+        return True
+    return not any(ref_eff_suit(c, trump) == led for c in hand)
+
+
 def ref_trick_winner(trick: list[tuple[int, int]], trump: int) -> int:
     """trick: [(seat, card), ...] in play order. Returns the winning seat."""
     led = ref_eff_suit(trick[0][1], trump)
@@ -332,6 +339,37 @@ def gen_golden_tests() -> dict[Path, str]:
         lines.append("function euchre:rules/trick_winner\n")
         lines.append(f"assert score #winner euchre.tmp matches {ref_trick_winner(trick, trump)}\n")
     out[GOLDEN / "trick_winner.mcfunction"] = "".join(lines)
+
+    # Seeded random follow-suit decisions. Hands are biased towards jacks so the
+    # left-bower cases come up often.
+    rng = random.Random(5678)
+    lines = [gh, "# 150 random follow-suit decisions (is this card legal from this hand?).\n"]
+    jacks = [s * len(RANKS) + JACK for s in range(4)]
+    legal_count = 0
+    for _ in range(150):
+        trump = rng.randrange(4)
+        size = rng.randint(1, 5)
+        pool = list(range(DECK_SIZE))
+        hand = rng.sample(pool, size)
+        if rng.random() < 0.5:
+            j = rng.choice(jacks)
+            if j not in hand:
+                hand[0] = j
+        cid = rng.choice(hand)
+        led_card = rng.choice([c for c in range(DECK_SIZE) if c not in hand])
+        led = None if rng.random() < 0.1 else ref_eff_suit(led_card, trump)
+        legal = ref_is_legal(cid, hand, trump, led)
+        legal_count += legal
+        lines.append(f"scoreboard players set #trump euchre.tmp {trump}\n")
+        lines.append(f"scoreboard players set #led euchre.tmp {-1 if led is None else led}\n")
+        lines.append(f"data modify storage euchre:tmp gh set value [{','.join(map(str, hand))}]\n")
+        lines.append(f"scoreboard players set #card euchre.tmp {cid}\n")
+        lines.append("execute store success score #ok euchre.tmp run function euchre:rules/is_legal\n")
+        lines.append(f"assert score #ok euchre.tmp matches {int(legal)}\n")
+        lines.append(f"assert score #card euchre.tmp matches {cid}\n")
+    # Guard against a degenerate sample (all legal or all illegal) slipping in.
+    assert 30 < legal_count < 140, legal_count
+    out[GOLDEN / "is_legal.mcfunction"] = "".join(lines)
     return out
 
 
