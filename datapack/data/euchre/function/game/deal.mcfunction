@@ -24,5 +24,4 @@ function euchre:game/save with storage euchre:tmp q
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/give_hand
 function euchre:game/show_upcard
 
-scoreboard players set @s euchre.alone -1
 function euchre:bid/begin
