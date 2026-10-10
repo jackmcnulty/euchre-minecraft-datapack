@@ -4,6 +4,13 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 
 ## [Unreleased]
 
+### Fixed
+- Cards on the table appeared mirrored. They now lie face up and turn to read upright for the player who played them; the up card faces the first bidder.
+- Seat labels sat on the tabletop over the played cards. They now float above each cushion. Existing tables need `remove_table` and setup again to move them.
+
+### Added
+- The dealer is marked on their seat label, shown on the board during play, and announced at each deal.
+
 ## [0.9.1] - 2026-10-09
 
 Pre-release with fixes from singleplayer QA.
