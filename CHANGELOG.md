@@ -2,9 +2,11 @@
 
 All notable changes to this project are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
-## [1.0.0] - unreleased
+## [Unreleased]
 
-First release, for Minecraft Java Edition 26.3 (data pack format 121, resource pack format 97.1).
+## [0.9.0] - 2026-10-09
+
+First public pre-release, for playtesting before 1.0.0. Minecraft Java Edition 26.3 (data pack format 121, resource pack format 97.1). Feature-complete; 1.0.0 follows once the manual QA checklist in docs/testing.md has been run with real players.
 
 ### Game
 - **Tables:** built from your own blocks and four cushions. Set one up with `euchre:setup`, `setup_custom {wager,target}` or `setup_advanced`, which validate the config and show it on the table's display.
