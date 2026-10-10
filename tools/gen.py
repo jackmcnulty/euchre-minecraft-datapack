@@ -372,6 +372,13 @@ def ref_score_hand(maker_team: int, maker_tricks: int, alone: bool) -> tuple[int
     return maker_team, 1
 
 
+def ref_hand_decided(maker_tricks: int, defender_tricks: int, alone: bool) -> bool:
+    """The hand can end early: ref_score_hand gives the same result for every
+    split of the tricks still to play."""
+    left = 5 - maker_tricks - defender_tricks
+    return len({ref_score_hand(0, maker_tricks + k, alone) for k in range(left + 1)}) == 1
+
+
 def ref_sort_key(cid: int, trump: int | None) -> int:
     """Display order in a hand: suits alternate colours (clubs, diamonds,
     spades, hearts), high to low; once trump is known, trump first by power."""
@@ -474,6 +481,21 @@ def gen_golden_tests() -> dict[Path, str]:
                 lines.append(f"assert score #pteam euchre.tmp matches {pteam}\n")
                 lines.append(f"assert score #pts euchre.tmp matches {pts}\n")
     out[GOLDEN / "score_hand.mcfunction"] = "".join(lines)
+
+    # Only asked after tricks 1-4 (the fifth always ends the hand), so m + d <= 4.
+    lines = [gh, "# Is the hand decided, for every trick count before the last trick?\n"]
+    for m in range(5):
+        for d in range(5 - m):
+            for alone in (False, True):
+                decided = ref_hand_decided(m, d, alone)
+                # The closed form in rules/hand_decided must match the definition.
+                assert decided == ((m >= 3 and d >= 1) or d >= 3), (m, d, alone)
+                lines.append(f"scoreboard players set #mtricks euchre.tmp {m}\n")
+                lines.append(f"scoreboard players set #dtricks euchre.tmp {d}\n")
+                lines.append(f"scoreboard players set #alone euchre.tmp {int(alone)}\n")
+                lines.append("execute store success score #ok euchre.tmp run function euchre:rules/hand_decided\n")
+                lines.append(f"assert score #ok euchre.tmp matches {int(decided)}\n")
+    out[GOLDEN / "hand_decided.mcfunction"] = "".join(lines)
 
     # Seeded random hands, sorted for display before and after trump is known.
     rng = random.Random(9012)

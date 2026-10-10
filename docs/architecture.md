@@ -69,7 +69,7 @@ stateDiagram-v2
     BID2 --> PLAY: suit named
     BID2 --> DEAL: four passes, stick_dealer off (redeal)
     PLAY --> TRICK_END: trick complete
-    TRICK_END --> PLAY: fewer than 5 tricks
+    TRICK_END --> PLAY: fewer than 5 tricks, result not yet decided
     TRICK_END --> DEAL: hand scored, no winner yet
     TRICK_END --> GAME_OVER: a team reaches the target (payout)
     GAME_OVER --> IDLE: pause; then ANTE/DEAL again if 4 still seated
@@ -169,6 +169,7 @@ carry `euchre.entity`, so they can never be swept up when a table is removed.
 | `rules/is_legal` | `#card`, `#trump`, `#led`, hand in `euchre:tmp gh` | success if legal |
 | `rules/trick_winner` | `#trump`, trick in `euchre:tmp game.trick` | `#winner` |
 | `rules/score_hand` | `#mteam`, `#mtricks`, `#alone` | `#pteam`, `#pts` |
+| `rules/hand_decided` | `#mtricks`, `#dtricks` | success if the remaining tricks can't change the score |
 
 ## Decisions
 

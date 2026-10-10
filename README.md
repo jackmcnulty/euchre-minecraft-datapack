@@ -75,7 +75,7 @@ The config is fixed for the table's lifetime and shown on its display. To change
 | **Deal** | When four players are seated, the cards are shuffled and dealt, and one card is turned up in the middle of the table. |
 | **Bid** | On your turn, buttons appear in your chat. **Round 1:** order up the up card's suit, alone or not, or pass. If someone orders up, the dealer picks up the up card and discards one. **Round 2:** name any other suit, alone or not, or pass. |
 | **Play** | On your turn, hold a card and right-click the spot in front of you. You must follow suit if you can. The best card takes the trick, and its player leads the next one. |
-| **Score** | The makers score 1 for 3–4 tricks and 2 for all five (4 if alone). Euchred makers give the other team 2. The first team to the target wins, and a new game starts if everyone stays seated. |
+| **Score** | The makers score 1 for 3–4 tricks and 2 for all five (4 if alone). Euchred makers give the other team 2. A hand ends early once the remaining tricks can't change the score (e.g. 3–1 after four tricks). The first team to the target wins, and a new game starts if everyone stays seated. |
 | **Leave** | Standing up or disconnecting mid-game pauses the game and holds your seat. Sit back down to resume, and your cards come back. If you're not back within the grace period, your team forfeits. If both teams have someone away, the game is cancelled. |
 
 The table's state is the source of truth for every hand. A card you drop, hand to someone or stash comes back to you, and duplicates disappear.
@@ -144,7 +144,7 @@ See **[docs/architecture.md](docs/architecture.md)** for the state machine diagr
   - the **PackTest** suite on a Fabric 26.3 server;
   - a **vanilla** 26.3 server smoke test, so the shipped pack is proven on an unmodded server.
 - **Tests** play real games with fake players: clicking cushions and spots, pressing chat buttons, disconnecting and rejoining, and staking diamonds. They check exact diamond counts and every ledger change.
-- **Golden tests** are generated from `tools/gen.py`'s reference model. They cover every card under every trump and led suit, 150 follow-suit decisions, 60 random tricks, and every scoring case.
+- **Golden tests** are generated from `tools/gen.py`'s reference model. They cover every card under every trump and led suit, 150 follow-suit decisions, 60 random tricks, every scoring case, and every hand-decided case.
 - **`tools/lint.py`** catches what Minecraft only reports at load time, plus project invariants:
   - only the two escrow functions touch diamonds;
   - no `minecraft:` writes, and everything uses the `euchre` prefix;

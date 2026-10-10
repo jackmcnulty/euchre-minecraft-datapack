@@ -14,7 +14,7 @@
 
 | Folder | What it covers |
 |---|---|
-| `test/golden/` | **Generated** from the reference model in `tools/gen.py`: effective suit (all 24 cards × 4 trumps), power (× 4 led suits), 150 follow-suit decisions, 60 random tricks, and every scoring case. |
+| `test/golden/` | **Generated** from the reference model in `tools/gen.py`: effective suit (all 24 cards × 4 trumps), power (× 4 led suits), 150 follow-suit decisions, 60 random tricks, every scoring case, and every hand-decided case. |
 | `test/rules/` | Hand-written left-bower follow-suit edge cases. |
 | `test/deck/` | Shuffling produces a permutation, differs between runs, and rigged decks split predictably. |
 | `test/table/` | Setup validation, seating via real cushion clicks, dealing and hand reconciliation, a full scripted hand (with a real spot click and a real chat-button press), bidding (stick the dealer, redeal), going alone, game over, leavers (return, forfeit, both teams). |

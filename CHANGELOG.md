@@ -9,6 +9,7 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - Seat labels sat on the tabletop over the played cards. They now float above each cushion. Existing tables need `remove_table` and setup again to move them.
 
 ### Changed
+- **Hands end early once the result is decided (issue #1):** for example at 3–1 after four tricks, or once the defenders have three. Points are the same as playing it out; a possible march (3–0, including alone) is still played out.
 - **More readable cards (issue #2):** new big-index art. The face is a large rank and suit (about 4× bigger, 2 px strokes, high contrast) instead of a small realistic card. The preview sheet shows the cards at real hotbar size.
 - Cards on the table are drawn at full brightness, so they're readable at night and indoors.
 - Hands are dealt sorted by suit (alternating colours) and rank. Once trump is set, they're re-sorted with trump first and the bowers on top.

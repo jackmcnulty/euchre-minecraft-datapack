@@ -1,4 +1,4 @@
-# As/at the table marker after the fifth trick: score the hand, then end the
+# As/at the table marker after the last trick: score the hand, then end the
 # game or deal the next hand (the deal passes clockwise).
 scoreboard players operation #mteam euchre.tmp = @s euchre.maker
 scoreboard players operation #mteam euchre.tmp %= #2 euchre.g
