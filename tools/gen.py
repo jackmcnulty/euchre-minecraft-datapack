@@ -549,6 +549,36 @@ def read(path: Path, like: str | bytes) -> str | bytes:
     return path.read_bytes() if isinstance(like, bytes) else path.read_text(encoding="utf-8")
 
 
+def png_content(data: bytes) -> bytes:
+    """A PNG's header plus its decompressed pixel data. Different zlib builds
+    (e.g. across Python versions and platforms) compress the same pixels to
+    different bytes, so generated PNGs are compared by content, not bytes."""
+    import struct
+    import zlib
+
+    pos, header, idat = 8, b"", b""
+    while pos < len(data):
+        (length,) = struct.unpack(">I", data[pos:pos + 4])
+        kind, body = data[pos + 4:pos + 8], data[pos + 8:pos + 8 + length]
+        if kind == b"IHDR":
+            header = body
+        elif kind == b"IDAT":
+            idat += body
+        pos += 12 + length
+    return header + zlib.decompress(idat)
+
+
+def same(path: Path, content: str | bytes) -> bool:
+    if not path.exists():
+        return False
+    if isinstance(content, bytes) and path.suffix == ".png":
+        try:
+            return png_content(path.read_bytes()) == png_content(content)
+        except Exception:
+            return False
+    return read(path, content) == content
+
+
 def rel(p: Path) -> str:
     return p.relative_to(ROOT).as_posix()
 
@@ -567,7 +597,7 @@ def main() -> int:
         for path, content in sorted(files.items()):
             if not path.exists():
                 problems.append(f"missing: {rel(path)}")
-            elif read(path, content) != content:
+            elif not same(path, content):
                 problems.append(f"stale: {rel(path)}")
         for p in problems:
             print(p, file=sys.stderr)
@@ -582,7 +612,7 @@ def main() -> int:
         print(f"removed orphan {rel(p)}")
     for path, content in sorted(files.items()):
         path.parent.mkdir(parents=True, exist_ok=True)
-        if not path.exists() or read(path, content) != content:
+        if not same(path, content):
             if isinstance(content, bytes):
                 path.write_bytes(content)
             else:
