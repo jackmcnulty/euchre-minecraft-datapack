@@ -31,9 +31,24 @@ dummy hs use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.sea
 dummy hw use entity @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=3},limit=1]
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2}]
 scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
-await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6}]
-# West dealt, so North (left of the dealer) leads. Trump is hearts (3).
-assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.trump=3,euchre.turn=0}]
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=3}]
+# West dealt, so North (left of the dealer) bids first.
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.turn=0}]
+
+# --- Bidding: North orders up hearts by pressing the chat button (/trigger) ---
+execute as hn run trigger euchre.act set 2
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=4}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.trump=3,euchre.maker=0,euchre.turn=3}]
+assert not entity @e[type=minecraft:item_display,tag=euchre.card_shown]
+# West (dealer) picked up the 9 of hearts and discards it again.
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"hw",n:6}
+execute if score #ok euchre.tmp matches 0 run fail "the dealer should hold 6 cards after picking up"
+execute store success score #ok euchre.tmp as hn run function euchre:play/try {card:5}
+assert score #ok euchre.tmp matches 0
+execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:18}
+execute if score #ok euchre.tmp matches 0 run fail [{text:"discard refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
+# Play starts left of the dealer: North leads.
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.turn=0}]
 
 # --- Refusals: out of turn, and a card that isn't in your hand ---
 execute store success score #ok euchre.tmp as he run function euchre:play/try {card:1}

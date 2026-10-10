@@ -17,6 +17,7 @@ scoreboard objectives add euchre.trump dummy
 scoreboard objectives add euchre.led dummy
 scoreboard objectives add euchre.upcard dummy
 scoreboard objectives add euchre.maker dummy
+scoreboard objectives add euchre.bids dummy
 scoreboard objectives add euchre.alone dummy
 scoreboard objectives add euchre.trickno dummy
 scoreboard objectives add euchre.tricks0 dummy

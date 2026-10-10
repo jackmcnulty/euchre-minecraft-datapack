@@ -5,6 +5,7 @@ scoreboard players operation #tid euchre.tmp = @s euchre.tid
 # Everyone needs 5 empty hotbar slots. If someone filled theirs since sitting
 # down, wait for them (we never move their items) and retry every 2 seconds.
 scoreboard players set #short euchre.tmp 0
+scoreboard players operation #dealer euchre.tmp = @s euchre.dealer
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/check_space
 execute if score #short euchre.tmp matches 1.. run return run scoreboard players set @s euchre.timer 40
 
@@ -23,6 +24,5 @@ function euchre:game/save with storage euchre:tmp q
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/give_hand
 function euchre:game/show_upcard
 
-# Bidding arrives in M5; until then trump is the up card's suit.
 scoreboard players set @s euchre.alone -1
-function euchre:play/begin_fixed_trump
+function euchre:bid/begin

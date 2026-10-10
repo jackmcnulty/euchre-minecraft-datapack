@@ -9,6 +9,7 @@ execute unless entity @s[tag=euchre.seated] run return run function euchre:util/
 # Table state.
 scoreboard players set #phase euchre.tmp -1
 execute as @e[type=minecraft:marker,tag=euchre.table] if score @s euchre.tid = #tid euchre.tmp run function euchre:play/read_table
+execute if score #phase euchre.tmp matches 4 run return run function euchre:bid/discard
 execute unless score #phase euchre.tmp matches 6 run return run function euchre:util/fail {msg:"You can't play a card right now."}
 execute unless score #turn euchre.tmp = #seat euchre.tmp run return run function euchre:util/fail {msg:"It's not your turn."}
 

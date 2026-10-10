@@ -109,6 +109,7 @@ OBJECTIVES = [
     ("euchre.led", "dummy"),
     ("euchre.upcard", "dummy"),
     ("euchre.maker", "dummy"),
+    ("euchre.bids", "dummy"),
     ("euchre.alone", "dummy"),
     ("euchre.trickno", "dummy"),
     ("euchre.tricks0", "dummy"),
@@ -256,6 +257,50 @@ def gen_deal_split() -> dict[Path, str]:
     return {DP / "function" / "gen" / "deal_split.mcfunction": "".join(lines)}
 
 
+def gen_bid_prompts() -> dict[Path, str]:
+    """Clickable chat prompts for bidding. Each button runs /trigger euchre.act
+    with a code: 1 pass, 2 order up, 10+suit name a suit (see bid/act)."""
+    prefix = '{text:"[Euchre] ",color:"gold"}'
+
+    def button(label: str, color: str, code: int, hover: str) -> str:
+        return (f'{{text:"[{label}]",color:"{color}",bold:true,'
+                f'click_event:{{action:"run_command",command:"/trigger euchre.act set {code}"}},'
+                f'hover_event:{{action:"show_text",value:"{hover}"}}}}')
+
+    def suit_color(s: int) -> str:
+        return "red" if SUITS[s]["color"] == "red" else "white"
+
+    pass_btn = button("Pass", "gray", 1, "Let the next player decide.")
+
+    r1 = [HEADER, "# As the first-round bidder. #up_suit: suit of the up card.\n"]
+    for s in range(4):
+        sym = SUITS[s]["symbol"]
+        order = button(f"Order up {sym}", suit_color(s), 2,
+                       f"Make {sym} trump. The dealer picks up the up card and discards one.")
+        r1.append(f'execute if score #up_suit euchre.tmp matches {s} run tellraw @s [{prefix},'
+                  f'{{text:"Your bid: ",color:"aqua"}},{order},{{text:" "}},{pass_btn}]\n')
+
+    r2 = [HEADER, "# As the second-round bidder. #down: the turned-down suit, which can't be named.\n",
+          "# #canpass: 0 when the dealer is stuck (stick the dealer), else 1.\n"]
+    for down in range(4):
+        for canpass in (0, 1):
+            parts = []
+            for s in range(4):
+                if s == down:
+                    continue
+                sym = SUITS[s]["symbol"]
+                parts.append(button(f"{sym}", suit_color(s), 10 + s, f"Name {sym} trump."))
+            if canpass:
+                parts.append(pass_btn)
+            joined = ',{text:" "},'.join(parts)
+            label = "Name trump: " if canpass else "Stick the dealer! Name trump: "
+            r2.append(f'execute if score #down euchre.tmp matches {down} if score #canpass euchre.tmp matches {canpass} '
+                      f'run tellraw @s [{prefix},{{text:"{label}",color:"aqua"}},{joined}]\n')
+
+    gen = DP / "function" / "gen"
+    return {gen / "bid_prompt1.mcfunction": "".join(r1), gen / "bid_prompt2.mcfunction": "".join(r2)}
+
+
 # --------------------------------------------------------------------------- #
 # Reference rules model. The datapack's rules/* functions implement these with
 # scoreboard arithmetic; the golden tests below check them against this model.
@@ -374,7 +419,7 @@ def gen_golden_tests() -> dict[Path, str]:
 
 
 GENERATORS = [gen_card_table, gen_hotbar_helpers, gen_objectives, gen_card_helpers, gen_deal_split,
-              gen_golden_tests]
+              gen_bid_prompts, gen_golden_tests]
 
 
 # --------------------------------------------------------------------------- #

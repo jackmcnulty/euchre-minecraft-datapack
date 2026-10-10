@@ -13,6 +13,8 @@ execute store result storage euchre:tmp disp.t1 int 1 run scoreboard players get
 function euchre:table/display/phase with storage euchre:tmp disp
 execute if score @s euchre.phase matches 0 if score @s euchre.seated matches 4 run data modify storage euchre:tmp disp.state set value "Table full"
 # While bidding, show who dealt and which card is turned up.
+data modify storage euchre:tmp disp.up_label set value "Up card"
+execute if score @s euchre.phase matches 5 run data modify storage euchre:tmp disp.up_label set value "Turned down"
 execute if score @s euchre.phase matches 3..5 run function euchre:table/display/bid_info with storage euchre:tmp disp
 # While playing, show trump, whose turn it is, and the tricks so far.
 execute if score @s euchre.phase matches 6..8 run function euchre:table/display/play_info with storage euchre:tmp disp
