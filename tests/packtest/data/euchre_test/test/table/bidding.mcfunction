@@ -50,12 +50,16 @@ execute store success score #ok euchre.tmp as be at be run function euchre:bid/a
 execute if score #ok euchre.tmp matches 0 run fail [{text:"E pass refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
 execute store success score #ok euchre.tmp as bs at bs run function euchre:bid/act {value:1}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"S pass refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
-# The dealer is stuck: passing is refused, naming spades works.
+# The dealer is stuck: passing is refused; naming spades alone works, and
+# their partner East sits out.
 execute store success score #ok euchre.tmp as bw at bw run function euchre:bid/act {value:1}
 assert score #ok euchre.tmp matches 0
-execute store success score #ok euchre.tmp as bw at bw run function euchre:bid/act {value:11}
+execute store success score #ok euchre.tmp as bw at bw run function euchre:bid/act {value:21}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"W names spades refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
-assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trump=1,euchre.maker=3,euchre.turn=0}]
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.trump=1,euchre.maker=3,euchre.alone=1,euchre.turn=0}]
+execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"be",n:0}
+execute if score #ok euchre.tmp matches 0 run fail "the partner of a lone maker holds no cards"
+assert not data storage euchre:tables list[0].game.hands[1][0]
 # Nobody picked anything up: everyone still holds 5 cards.
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"bw",n:5}
 execute if score #ok euchre.tmp matches 0 run fail "the dealer should still hold 5 cards"

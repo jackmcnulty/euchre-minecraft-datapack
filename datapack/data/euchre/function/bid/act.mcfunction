@@ -1,7 +1,9 @@
 # As/at a seated player: make bidding choice $(value). The internal API behind
 # the chat buttons; tests call it directly.
-#   1 pass, 2 order up (round 1), 10+suit name that suit (round 2)
+#   1 pass, 2 order up / 3 order up alone (round 1),
+#   10+suit name that suit / 20+suit name it alone (round 2)
 $scoreboard players set #act euchre.tmp $(value)
+scoreboard players set #alone_bid euchre.tmp 0
 execute unless entity @s[tag=euchre.seated] run return fail
 scoreboard players operation #tid euchre.tmp = @s euchre.tid
 scoreboard players operation #seat euchre.tmp = @s euchre.seat
