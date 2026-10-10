@@ -1,4 +1,5 @@
 # As a table marker: redraw the board and the seat labels from storage.
+# lint: phase-chain-ok (display helpers only read state)
 scoreboard players operation #tid euchre.tmp = @s euchre.tid
 data modify storage euchre:tmp disp set value {info:"",score:""}
 execute store result storage euchre:tmp disp.tid int 1 run scoreboard players get #tid euchre.tmp

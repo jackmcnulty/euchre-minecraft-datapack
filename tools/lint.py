@@ -10,6 +10,7 @@ Rules (each one protects an invariant from the design docs):
   cushions    cushions are player-owned: nothing may kill them
   overflow    entity positions are never scaled by more than 10 into a score
   syntax      quotes and brackets balance on every command line
+  dispatch    phase dispatch tables return after the first matching handler
   refs        every `function euchre:...` reference resolves to a file
 
 Usage: python tools/lint.py   (exit 1 on any violation)
@@ -104,6 +105,23 @@ def balance_problem(line: str) -> str | None:
     return None
 
 
+RE_PHASE_DISPATCH = re.compile(r"^execute if score @s euchre\.phase matches \S+ run function ")
+
+
+def check_phase_dispatch(p: Path, lines: list[str]) -> None:
+    """Several `if phase matches X run function` lines in a row form a dispatch
+    table. Unless each one returns, a handler that changes the phase makes a
+    later line fire in the same tick (this once skipped the game-over pause).
+    Files whose handlers never change the phase can opt out with a comment
+    containing `lint: phase-chain-ok`."""
+    if any("lint: phase-chain-ok" in l for l in lines):
+        return
+    hits = [n for n, l in enumerate(lines, 1) if RE_PHASE_DISPATCH.match(l.strip())]
+    if len(hits) >= 2:
+        for n in hits:
+            err(p, n, "dispatch", "phase dispatch must use `run return run function` (or mark the file phase-chain-ok)")
+
+
 def check_mcfunctions() -> None:
     files = list((DP_DATA / "euchre").rglob("*.mcfunction"))
     files += list((ROOT / "tests" / "packtest").rglob("*.mcfunction"))
@@ -111,7 +129,10 @@ def check_mcfunctions() -> None:
     for p in files:
         in_pack = euchre_fn in p.parents
         relname = p.relative_to(euchre_fn).as_posix() if in_pack else None
-        for n, raw in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
+        all_lines = p.read_text(encoding="utf-8").splitlines()
+        if in_pack:
+            check_phase_dispatch(p, all_lines)
+        for n, raw in enumerate(all_lines, 1):
             line = raw.strip()
             if not line or line.startswith("#"):
                 continue

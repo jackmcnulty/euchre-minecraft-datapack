@@ -1,4 +1,5 @@
 # As/at the table marker: everyone is back. Continue exactly where the game paused.
+# lint: phase-chain-ok (the prompts below never change the phase)
 scoreboard players operation @s euchre.phase = @s euchre.resume
 function euchre:recount_active
 function euchre:table/display/update
