@@ -13,6 +13,7 @@ Rules (each one protects an invariant from the design docs):
   syntax      quotes and brackets balance on every command line
   dispatch    phase dispatch tables return after the first matching handler
   refs        every `function euchre:...` reference resolves to a file
+  rp-refs     resource pack item models -> models -> textures all resolve
 
 Usage: python tools/lint.py   (exit 1 on any violation)
 """
@@ -198,11 +199,48 @@ def check_json_refs() -> None:
             err(p, None, "refs", f"function {ref} does not exist")
 
 
+def check_resource_pack() -> None:
+    """Every item definition's models exist, and every model's textures exist.
+    (A broken reference only shows up in game as a purple-and-black square.)
+    Also: every card the datapack can create has both of its item models."""
+    rp = ROOT / "resourcepack" / "assets"
+
+    def asset(ref: str, kind: str, ext: str) -> Path:
+        ns, _, path = ref.partition(":")
+        return rp / ns / kind / f"{path}{ext}"
+
+    def walk(node, found: list[str]) -> None:
+        if isinstance(node, dict):
+            if node.get("type") == "minecraft:model" and "model" in node:
+                found.append(node["model"])
+            for v in node.values():
+                walk(v, found)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v, found)
+
+    for p in (rp / "euchre" / "items").glob("*.json"):
+        refs: list[str] = []
+        walk(json.loads(p.read_text(encoding="utf-8")), refs)
+        for ref in refs:
+            if not asset(ref, "models", ".json").is_file():
+                err(p, None, "rp-refs", f"model {ref} does not exist")
+    for p in (rp / "euchre" / "models").rglob("*.json"):
+        for ref in json.loads(p.read_text(encoding="utf-8")).get("textures", {}).values():
+            if ref.startswith("euchre:") and not asset(ref, "textures", ".png").is_file():
+                err(p, None, "rp-refs", f"texture {ref} does not exist")
+    for cid in range(24):
+        for name in (f"card_{cid}", f"card_face_{cid}"):
+            if not (rp / "euchre" / "items" / f"{name}.json").is_file():
+                err(rp / "euchre" / "items", None, "rp-refs", f"item model euchre:{name} is missing")
+
+
 def main() -> int:
     check_json()
     check_namespace()
     check_mcfunctions()
     check_json_refs()
+    check_resource_pack()
     for e in errors:
         print(e, file=sys.stderr)
     if errors:

@@ -2,9 +2,11 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: fully playable, free or wagered (M8).** Card art and polish are next. See the [roadmap](#roadmap).
+> **Status: fully playable, free or wagered, with card art (M9).** Final polish and the v1.0 release are next. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
+
+![The 24 Euchre cards and the card back](docs/images/cards.png)
 
 ## Why this exists
 
@@ -14,7 +16,13 @@ Other projects bring cards into Minecraft, such as card-only packs and a physica
 
 1. Download `euchre-datapack-<version>.zip` and `euchre-resourcepack-<version>.zip` from Releases.
 2. Put the datapack zip in `<world>/datapacks/` and run `/reload`.
-3. Serve the resource pack. On a server, use `resource-pack` in `server.properties`. In single player, put it in `resourcepacks/`.
+3. Install the **resource pack** for every player. It draws the cards. Without it, cards still work and show their names (like "A♥"), but they look like a missing texture.
+   - **Server:** host the zip somewhere public, then in `server.properties` set `resource-pack=<url>`, `resource-pack-sha1=<sha1 of the zip>` and, ideally, `require-resource-pack=true`.
+   - **Single player:** put the zip in `.minecraft/resourcepacks/` and enable it.
+
+**How cards look:** the pack only adds new `euchre:` models, so no vanilla item's appearance changes. You see your own cards face up in your hotbar and hand, but everyone else sees the card *back*, in third person, on the ground and in item frames, so nobody can peek. Cards played to the table lie face up.
+
+**Survival-safe:** cards are built on the debug stick, an item survival players can't obtain and that does nothing in survival. Cards only exist during a game and are removed from anywhere they don't belong.
 
 ## Setting up a table
 
