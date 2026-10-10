@@ -11,8 +11,6 @@
 # chunk ticks entities, and a cushion in a non-ticking chunk never lets its rider
 # stand up. Force-load the neighbourhood (the test removes it again).
 forceload add ~-2 ~-2 ~2 ~2
-fill ~-1 ~-1 ~-1 ~1 ~-1 ~1 minecraft:smooth_stone
-setblock ~ ~ ~ minecraft:oak_planks
 scoreboard players set #loaded euchre.tmp 0
 summon minecraft:marker ~ ~ ~ {Tags:["euchre_test.origin"]}
 function euchre_test:area_loaded

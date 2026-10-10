@@ -2,7 +2,7 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: early development (M2 done: tables, seating, shuffling and dealing).** Bidding and trick play come next. See the [roadmap](#roadmap).
+> **Status: early development (M3 done: tables, seating, dealing, and playing tricks).** Until bidding lands, trump is the up card's suit, and follow-suit isn't enforced yet. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
 
@@ -40,7 +40,9 @@ The config is fixed while the table exists. To change it, remove the table and s
 
 **Sitting:** right-click a cushion. You need **5 empty hotbar slots**, because your cards are dealt there. Your own items are never moved. To get up, sneak.
 
-**Cards:** when all four seats are filled on a free table, the cards are shuffled and each player is dealt 5. The table's state is the source of truth: a card you drop or pass to someone comes back to your hand, and duplicates or leftover cards disappear. For now, a player leaving mid-game stops the game. A grace period to return arrives with leaver handling.
+**Cards:** when all four seats are filled on a free table, the cards are shuffled and each player is dealt 5. The table's state is the source of truth: a card you drop or pass to someone comes back to your hand, and duplicates or leftover cards disappear. **Playing:** on your turn, hold a card and right-click the spot on the table in front of you. The card lies face up there; when everyone has played, the best card takes the trick and its player leads next.
+
+For now, a player leaving mid-game stops the game. A grace period to return arrives with leaver handling.
 
 ### Operator commands
 | Command | What it does |
