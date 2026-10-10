@@ -133,7 +133,8 @@ assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=7,e
 scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
 
 # Team A reached the target: game over, then (all four still seated) a new game.
-await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=9,euchre.pts0=1}]
+await delay 3
+execute unless entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=9,euchre.pts0=1}] run fail [{text:"expected game over; phase="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.phase"}},{text:" pts0="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.pts0"}},{text:" pts1="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.pts1"}},{text:" trickno="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.trickno"}},{text:" timer="},{score:{name:"@e[type=minecraft:marker,tag=euchre.table,limit=1]",objective:"euchre.timer"}},{text:" target="},{storage:"euchre:tables",nbt:"list[0].config.target"}]
 execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"hn",n:0}
 execute if score #ok euchre.tmp matches 0 run fail "cards should be cleared at game over"
 assert not data storage euchre:tables list[0].game
