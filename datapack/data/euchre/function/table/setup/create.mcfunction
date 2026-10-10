@@ -11,6 +11,8 @@ execute as @e[type=minecraft:marker,tag=euchre.new,limit=1] run function euchre:
 # --- Claim the builder's cushions (tags and scores only; we never kill them) ---
 scoreboard players operation @e[type=minecraft:cushion,tag=euchre.candidate] euchre.tid = #tid euchre.tmp
 tag @e[type=minecraft:cushion,tag=euchre.candidate] add euchre.seat
+# While they're seats, a stray punch can't break them (see table/protect_cushion).
+execute as @e[type=minecraft:cushion,tag=euchre.candidate] run function euchre:table/protect_cushion
 
 # --- Persistent record ---
 data modify storage euchre:tables list append value {seats:[{},{},{},{}],config:{},escrow:{entries:[]},ante:[0b,0b,0b,0b]}

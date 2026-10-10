@@ -30,4 +30,5 @@ data modify storage euchre:const phase_names set value ["Waiting for players","W
 
 # --- Tables may have changed while the pack was unloaded; recount the active ones ---
 function euchre:recount_active
+execute as @e[type=minecraft:cushion,tag=euchre.seat] run function euchre:table/protect_cushion
 schedule function euchre:heartbeat 100t

@@ -44,6 +44,17 @@ assert score #n euchre.tmp matches 4
 execute positioned ~0.5 ~2.4 ~-0.5 run assert entity @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0},distance=..0.3]
 assert entity @e[type=minecraft:text_display,tag=euchre.board]
 
+# Seat cushions are protected: all four invulnerable, and a punch doesn't break one.
+execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre.seat,nbt={Invulnerable:1b}]
+assert score #n euchre.tmp matches 4
+execute positioned ~0.5 ~1 ~0.5 run dummy pp spawn
+tp pp ~0.5 ~1 ~0.5
+dummy pp attack @e[type=minecraft:cushion,tag=euchre.seat,scores={euchre.seat=2},limit=1]
+await delay 2
+execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre.seat]
+assert score #n euchre.tmp matches 4
+dummy pp leave
+
 # A second table is refused.
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
 assert score #r euchre.tmp matches 0
@@ -99,6 +110,8 @@ assert not data storage euchre:tables list[0]
 assert not entity @e[tag=euchre.entity]
 execute store result score #n euchre.tmp if entity @e[type=minecraft:cushion,tag=euchre_test.cushion,tag=!euchre.seat]
 assert score #n euchre.tmp matches 3
+# Released cushions are ordinary (breakable) again.
+assert not entity @e[type=minecraft:cushion,tag=euchre_test.cushion,nbt={Invulnerable:1b}]
 
 kill @e[type=minecraft:cushion,tag=euchre_test.cushion]
 dummy pn leave

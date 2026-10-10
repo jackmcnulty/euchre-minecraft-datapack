@@ -9,6 +9,7 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - Seat labels sat on the tabletop over the played cards. They now float above each cushion. Existing tables need `remove_table` and setup again to move them.
 
 ### Added
+- Seat cushions can't be broken by an accidental punch while they belong to a table. Removing the table makes them breakable again, and existing tables are protected automatically.
 - The dealer is marked on their seat label, shown on the board during play, and announced at each deal.
 
 ## [0.9.1] - 2026-10-09

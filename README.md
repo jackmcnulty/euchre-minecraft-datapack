@@ -48,7 +48,7 @@ The resource pack only adds new `euchre:` models, so it doesn't change the look 
 ```
 
 1. Build a table from any blocks: 1×1, 3×3, whatever you like.
-2. Place **4 cushions** around it, one on each side, within 3 blocks of the centre. The cushions stay yours: the datapack only tags them and never breaks or moves them.
+2. Place **4 cushions** around it, one on each side, within 3 blocks of the centre. The cushions stay yours: the datapack never breaks or moves them. While they're part of a table, they **can't be broken by a punch** (creative-mode players can still break them, and pistons and lava still destroy them). They become ordinary cushions again when the table is removed.
 3. Stand on the **centre of the tabletop** and run one of:
 
 ```mcfunction
