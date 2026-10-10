@@ -27,3 +27,4 @@ scoreboard objectives remove euchre.pts1
 scoreboard objectives remove euchre.timer
 scoreboard objectives remove euchre.nonce
 scoreboard objectives remove euchre.deadline
+scoreboard objectives remove euchre.pot

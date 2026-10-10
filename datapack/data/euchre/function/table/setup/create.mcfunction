@@ -13,7 +13,7 @@ scoreboard players operation @e[type=minecraft:cushion,tag=euchre.candidate] euc
 tag @e[type=minecraft:cushion,tag=euchre.candidate] add euchre.seat
 
 # --- Persistent record ---
-data modify storage euchre:tables list append value {seats:[{},{},{},{}],config:{}}
+data modify storage euchre:tables list append value {seats:[{},{},{},{}],config:{},escrow:{entries:[]},ante:[0b,0b,0b,0b]}
 execute store result storage euchre:tables list[-1].id int 1 run scoreboard players get #tid euchre.tmp
 execute store result storage euchre:tables list[-1].config.wager int 1 run scoreboard players get #w euchre.tmp
 execute store result storage euchre:tables list[-1].config.target int 1 run scoreboard players get #t euchre.tmp

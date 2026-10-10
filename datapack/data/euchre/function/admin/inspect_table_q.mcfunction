@@ -1,0 +1,1 @@
+$tellraw @a[tag=euchre.inspecting] [{text:"Table #$(tid) config: ",color:"gold"},{storage:"euchre:tables",nbt:"list[{id:$(tid)}].config",color:"white"},{text:"\nSeats: ",color:"gold"},{storage:"euchre:tables",nbt:"list[{id:$(tid)}].seats",color:"white"},{text:"\nEscrow: ",color:"gold"},{storage:"euchre:tables",nbt:"list[{id:$(tid)}].escrow",color:"white"}]

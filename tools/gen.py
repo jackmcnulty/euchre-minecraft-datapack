@@ -119,6 +119,7 @@ OBJECTIVES = [
     ("euchre.timer", "dummy"),
     ("euchre.nonce", "dummy"),
     ("euchre.deadline", "dummy"),
+    ("euchre.pot", "dummy"),
 ]
 
 
@@ -450,8 +451,30 @@ def gen_golden_tests() -> dict[Path, str]:
     return out
 
 
+def gen_escrow() -> dict[Path, str]:
+    """The only two functions in the pack that touch diamonds (tools/lint.py
+    enforces this). Both are generated so PLAIN_DIAMOND is written exactly once."""
+    gen = DP / "function" / "gen"
+    collect = HEADER + f"""# As a player. The ONLY function that removes diamonds from anyone.
+#   #take euchre.tmp = 0: returns how many plain diamonds they carry (removes none)
+#   #take euchre.tmp = 1: removes up to $(amount) plain diamonds, returns how many
+# Only "plain" diamonds count (see PLAIN_DIAMOND in tools/gen.py): renamed or
+# otherwise modified diamonds are never counted or taken.
+execute if score #take euchre.tmp matches 0 run return run clear @s {PLAIN_DIAMOND} 0
+$return run clear @s {PLAIN_DIAMOND} $(amount)
+"""
+    give = HEADER + """# As a player tagged euchre.payee. The ONLY function that gives diamonds to anyone.
+# Gives $(amount) plain diamonds. Whatever doesn't fit is dropped at the player's
+# feet as an item only they can pick up (vanilla /give); mark those drops so
+# they never despawn.
+$give @s minecraft:diamond $(amount)
+execute as @e[type=minecraft:item,distance=..3] if items entity @s contents minecraft:diamond run function euchre:escrow/protect_drop
+"""
+    return {gen / "escrow_collect.mcfunction": collect, gen / "escrow_give.mcfunction": give}
+
+
 GENERATORS = [gen_card_table, gen_hotbar_helpers, gen_objectives, gen_card_helpers, gen_deal_split,
-              gen_bid_prompts, gen_golden_tests]
+              gen_bid_prompts, gen_escrow, gen_golden_tests]
 
 
 # --------------------------------------------------------------------------- #

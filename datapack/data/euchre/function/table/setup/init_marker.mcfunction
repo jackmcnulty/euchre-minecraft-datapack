@@ -16,3 +16,4 @@ scoreboard players set @s euchre.resume 0
 scoreboard players set @s euchre.deadline 0
 scoreboard players set @s euchre.pts0 0
 scoreboard players set @s euchre.pts1 0
+scoreboard players set @s euchre.pot 0

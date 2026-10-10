@@ -1,7 +1,9 @@
 # As a table marker: redraw the board and the seat labels from storage.
 # lint: phase-chain-ok (display helpers only read state)
 scoreboard players operation #tid euchre.tmp = @s euchre.tid
-data modify storage euchre:tmp disp set value {info:"",score:""}
+data modify storage euchre:tmp disp set value {info:"",score:"",pot_line:""}
+execute store result storage euchre:tmp disp.pot int 1 run scoreboard players get @s euchre.pot
+execute if score @s euchre.pot matches 1.. run function euchre:table/display/pot_text with storage euchre:tmp disp
 execute store result storage euchre:tmp disp.tid int 1 run scoreboard players get #tid euchre.tmp
 execute store result storage euchre:tmp disp.seated int 1 run scoreboard players get @s euchre.seated
 execute store result storage euchre:tmp disp.phase int 1 run scoreboard players get @s euchre.phase

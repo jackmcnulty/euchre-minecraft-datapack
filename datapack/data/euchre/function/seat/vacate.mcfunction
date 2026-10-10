@@ -6,6 +6,7 @@ scoreboard players remove @s euchre.seated 1
 execute if score @s euchre.seated matches ..-1 run scoreboard players set @s euchre.seated 0
 $execute if score @s euchre.phase matches 2..8 run return run function euchre:leave/away {tid:$(tid),seat:$(seat)}
 $execute if score @s euchre.phase matches 10 run return run function euchre:leave/away {tid:$(tid),seat:$(seat)}
+execute if score @s euchre.phase matches 1 run function euchre:escrow/ante_cancel
 $data modify storage euchre:tables list[{id:$(tid)}].seats[$(seat)] set value {}
 function euchre:recount_active
 function euchre:table/display/update

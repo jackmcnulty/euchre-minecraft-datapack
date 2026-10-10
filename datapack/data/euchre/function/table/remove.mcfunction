@@ -2,6 +2,9 @@
 scoreboard players operation #tid euchre.tmp = @s euchre.tid
 execute store result storage euchre:tmp q.tid int 1 run scoreboard players get #tid euchre.tmp
 
+# Refund any stakes before anything else is torn down.
+function euchre:escrow/refund_all
+
 # Stand up everyone seated here.
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:table/remove_player
 # Release the builder's cushions: drop our tags and scores, never the entity.

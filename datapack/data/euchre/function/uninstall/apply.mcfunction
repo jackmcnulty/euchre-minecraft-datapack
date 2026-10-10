@@ -5,6 +5,8 @@ execute as @a run function euchre:gen/clear_cards
 tag @a remove euchre.seated
 tag @a remove euchre.sit_check
 tag @a remove euchre.notify
+tag @a remove euchre.payee
+tag @a remove euchre.inspecting
 scoreboard players reset @a euchre.act
 advancement revoke @a only euchre:seat_click
 schedule clear euchre:seat/deferred_check

@@ -27,3 +27,4 @@ scoreboard objectives add euchre.pts1 dummy
 scoreboard objectives add euchre.timer dummy
 scoreboard objectives add euchre.nonce dummy
 scoreboard objectives add euchre.deadline dummy
+scoreboard objectives add euchre.pot dummy
