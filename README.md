@@ -8,7 +8,7 @@ A complete, **rules-enforcing game of Euchre** for Minecraft Java Edition 26.3. 
 
 It's a pure vanilla **datapack** plus a small **resource pack** for the card art. There are no mods or plugins.
 
-> **Status:** v0.9.0 is a feature-complete pre-release for playtesting; 1.0.0 follows after real-player QA.
+> **Status:** v0.9.1 is a feature-complete pre-release for playtesting; 1.0.0 follows after real-player QA.
 
 <!-- TODO: demo GIF of a hand being played -->
 

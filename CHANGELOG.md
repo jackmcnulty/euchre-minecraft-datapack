@@ -4,6 +4,10 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-09
+
+Pre-release with fixes from singleplayer QA.
+
 ### Fixed
 - Cards in item frames showed their name (e.g. "A♥"). Cards are now named with `item_name`, which item frames don't display.
 - Cards put into item frames or the hands of armor stands, allays, foxes or dolphins weren't cleaned up. The once-a-second sweep now covers them.
