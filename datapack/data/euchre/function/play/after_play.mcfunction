@@ -14,6 +14,7 @@ execute as @e[type=minecraft:interaction,tag=euchre.spot] if score @s euchre.tid
 execute as @e[type=minecraft:item_display,tag=euchre.card_new] run function euchre:gen/card_to_contents with storage euchre:tmp gc
 tag @e[type=minecraft:item_display,tag=euchre.card_new] add euchre.trick_card
 tag @e[type=minecraft:item_display,tag=euchre.card_new] remove euchre.card_new
+playsound minecraft:item.book.page_turn block @a[distance=..16] ~ ~ ~ 0.8 1.2
 tellraw @a[distance=..16] [{text:"[Euchre] ",color:"gold"},{storage:"euchre:tmp",nbt:"name",color:"white"},{text:" played ",color:"gray"},{storage:"euchre:tmp",nbt:"gc.name",color:"white"}]
 
 # 4 cards complete a trick (3 when someone sits out a lone hand).

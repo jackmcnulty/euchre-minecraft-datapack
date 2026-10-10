@@ -2,3 +2,4 @@
 scoreboard players operation #tid euchre.tmp = @s euchre.tid
 scoreboard players operation #turn euchre.tmp = @s euchre.turn
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp if score @s euchre.seat = #turn euchre.tmp run tellraw @s [{text:"[Euchre] ",color:"gold"},{text:"Your turn: hold a card and right-click your spot.",color:"aqua"}]
+execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp if score @s euchre.seat = #turn euchre.tmp at @s run playsound minecraft:block.note_block.pling player @s ~ ~ ~ 0.5 1.5

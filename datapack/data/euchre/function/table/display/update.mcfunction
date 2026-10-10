@@ -28,4 +28,8 @@ data modify storage euchre:tmp disp.alone_note set value ""
 execute if score @s euchre.alone matches 0.. run data modify storage euchre:tmp disp.alone_note set value " · lone hand"
 execute if score @s euchre.phase matches 6..8 run function euchre:table/display/play_info with storage euchre:tmp disp
 function euchre:table/display/board with storage euchre:tmp disp
+# Seat labels mark whose turn it is (while bidding or playing) and who sits out.
+scoreboard players set #lturn euchre.tmp -1
+execute if score @s euchre.phase matches 3..6 run scoreboard players operation #lturn euchre.tmp = @s euchre.turn
+scoreboard players operation #lalone euchre.tmp = @s euchre.alone
 execute as @e[type=minecraft:text_display,tag=euchre.seat_label] if score @s euchre.tid = #tid euchre.tmp run function euchre:table/display/label

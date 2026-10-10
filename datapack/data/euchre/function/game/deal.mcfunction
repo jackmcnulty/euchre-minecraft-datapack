@@ -23,5 +23,6 @@ function euchre:game/save with storage euchre:tmp q
 # Cards into hotbars, and the up card face up in the middle of the table.
 execute as @a[tag=euchre.seated] if score @s euchre.tid = #tid euchre.tmp run function euchre:game/give_hand
 function euchre:game/show_upcard
+playsound minecraft:item.book.put block @a[distance=..16] ~ ~ ~ 1 0.8
 
 function euchre:bid/begin
