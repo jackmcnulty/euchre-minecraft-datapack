@@ -372,6 +372,16 @@ def ref_score_hand(maker_team: int, maker_tricks: int, alone: bool) -> tuple[int
     return maker_team, 1
 
 
+def ref_sort_key(cid: int, trump: int | None) -> int:
+    """Display order in a hand: suits alternate colours (clubs, diamonds,
+    spades, hearts), high to low; once trump is known, trump first by power."""
+    suit, rank = divmod(cid, len(RANKS))
+    if trump is not None and ref_eff_suit(cid, trump) == trump:
+        return 40 - ref_power(cid, trump, trump)
+    order = (suit % 2) * 2 + suit // 2
+    return 100 + order * 10 + (5 - rank)
+
+
 def ref_trick_winner(trick: list[tuple[int, int]], trump: int) -> int:
     """trick: [(seat, card), ...] in play order. Returns the winning seat."""
     led = ref_eff_suit(trick[0][1], trump)
@@ -464,6 +474,21 @@ def gen_golden_tests() -> dict[Path, str]:
                 lines.append(f"assert score #pteam euchre.tmp matches {pteam}\n")
                 lines.append(f"assert score #pts euchre.tmp matches {pts}\n")
     out[GOLDEN / "score_hand.mcfunction"] = "".join(lines)
+
+    # Seeded random hands, sorted for display before and after trump is known.
+    rng = random.Random(9012)
+    lines = [gh, "# 80 random hands sorted for display (no trump yet, and each trump).\n"]
+    for _ in range(80):
+        hand = rng.sample(range(DECK_SIZE), rng.randint(1, 6))
+        trump = rng.choice([None, 0, 1, 2, 3])
+        expect = sorted(hand, key=lambda c: ref_sort_key(c, trump))
+        lines.append(f"scoreboard players set #sorttrump euchre.tmp {-1 if trump is None else trump}\n")
+        lines.append(f"data modify storage euchre:tmp gh set value [{','.join(map(str, hand))}]\n")
+        lines.append("function euchre:rules/sort_hand\n")
+        for i, c in enumerate(expect):
+            lines.append(f"execute store result score #v euchre.tmp run data get storage euchre:tmp gh[{i}]\n")
+            lines.append(f"assert score #v euchre.tmp matches {c}\n")
+    out[GOLDEN / "sort_hand.mcfunction"] = "".join(lines)
     return out
 
 

@@ -90,6 +90,8 @@ assert score #ok euchre.tmp matches 0
 
 # --- Trick 1: North leads A-clubs by actually clicking their spot (it's in the
 # --- selected hotbar slot 0). West has no clubs and trumps with Q-hearts.
+# Hands are re-sorted once trump is set: A-hearts (trump) is first, A-clubs second.
+dummy hn selectslot 2
 dummy hn use entity @e[type=minecraft:interaction,tag=euchre.spot,scores={euchre.seat=0},limit=1]
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.turn=1,euchre.led=0}]
 execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{card:5}}] 0

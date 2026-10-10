@@ -10,5 +10,7 @@ scoreboard players set @s euchre.tricks0 0
 scoreboard players set @s euchre.tricks1 0
 scoreboard players set @s euchre.led -1
 scoreboard players set @s euchre.phase 6
+# Trump is known: re-sort hands with trump first and the bowers on top.
+function euchre:card/refresh_hands
 function euchre:table/display/update
 function euchre:play/prompt

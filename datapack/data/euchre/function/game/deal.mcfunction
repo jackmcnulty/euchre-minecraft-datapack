@@ -15,6 +15,10 @@ scoreboard players operation @s euchre.nonce = #nonce euchre.g
 
 function euchre:deck/shuffle
 function euchre:gen/deal_split
+# Hands are dealt sorted by suit and rank (re-sorted with trump first once
+# trump is known; see card/refresh_hands).
+scoreboard players set #sorttrump euchre.tmp -1
+function euchre:game/sort_hands
 execute store result storage euchre:tmp game.nonce int 1 run scoreboard players get #nonce euchre.g
 execute store result score @s euchre.upcard run data get storage euchre:tmp game.kitty[0]
 execute store result storage euchre:tmp q.tid int 1 run scoreboard players get #tid euchre.tmp

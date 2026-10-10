@@ -36,6 +36,14 @@ execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.s
 execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0}] if function euchre_test:label_says_dealer run fail "only the dealer's label says Dealer"
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.turn=0}]
 
+# Hands are dealt sorted: suits alternate colours (clubs, diamonds, spades,
+# hearts), high to low. North: A-clubs, 9-clubs, A-diamonds, A-spades, A-hearts.
+execute unless items entity hn hotbar.0 minecraft:debug_stick[custom_data~{euchre:{card:5}}] run fail "hn hotbar.0 should hold card 5"
+execute unless items entity hn hotbar.1 minecraft:debug_stick[custom_data~{euchre:{card:0}}] run fail "hn hotbar.1 should hold card 0"
+execute unless items entity hn hotbar.2 minecraft:debug_stick[custom_data~{euchre:{card:17}}] run fail "hn hotbar.2 should hold card 17"
+execute unless items entity hn hotbar.3 minecraft:debug_stick[custom_data~{euchre:{card:11}}] run fail "hn hotbar.3 should hold card 11"
+execute unless items entity hn hotbar.4 minecraft:debug_stick[custom_data~{euchre:{card:23}}] run fail "hn hotbar.4 should hold card 23"
+
 # --- Bidding: North orders up hearts by pressing the chat button (/trigger) ---
 execute as hn run trigger euchre.act set 2
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=4}]
@@ -48,7 +56,13 @@ execute store success score #ok euchre.tmp as hn run function euchre:play/try {c
 assert score #ok euchre.tmp matches 0
 execute store success score #ok euchre.tmp as hw run function euchre:play/try {card:18}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"discard refused: "},{storage:"euchre:tmp",nbt:"last_error"}]
-# Play starts left of the dealer: North leads.
+# Play starts left of the dealer: North leads. Hands were re-sorted with
+# trump (hearts) first: North now holds A-hearts, A-clubs, 9-clubs, A-diamonds, A-spades.
+execute unless items entity hn hotbar.0 minecraft:debug_stick[custom_data~{euchre:{card:23}}] run fail "hn hotbar.0 should hold card 23"
+execute unless items entity hn hotbar.1 minecraft:debug_stick[custom_data~{euchre:{card:5}}] run fail "hn hotbar.1 should hold card 5"
+execute unless items entity hn hotbar.2 minecraft:debug_stick[custom_data~{euchre:{card:0}}] run fail "hn hotbar.2 should hold card 0"
+execute unless items entity hn hotbar.3 minecraft:debug_stick[custom_data~{euchre:{card:17}}] run fail "hn hotbar.3 should hold card 17"
+execute unless items entity hn hotbar.4 minecraft:debug_stick[custom_data~{euchre:{card:11}}] run fail "hn hotbar.4 should hold card 11"
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=6,euchre.turn=0}]
 
 # --- Refusals: out of turn, and a card that isn't in your hand ---
@@ -59,6 +73,8 @@ assert score #ok euchre.tmp matches 0
 
 # --- Trick 1: North leads A-clubs by actually clicking their spot (it's in the
 # --- selected hotbar slot 0). West has no clubs and trumps with Q-hearts.
+# Hands are re-sorted once trump is set: A-hearts (trump) is first, A-clubs second.
+dummy hn selectslot 2
 dummy hn use entity @e[type=minecraft:interaction,tag=euchre.spot,scores={euchre.seat=0},limit=1]
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.turn=1,euchre.led=0}]
 execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{card:5}}] 0
@@ -67,6 +83,8 @@ assert entity @e[type=minecraft:item_display,tag=euchre.trick_card]
 # North's card lies face up, turned so its top points at the table centre
 # (south, yaw 0): it reads upright from North's seat.
 assert entity @e[type=minecraft:item_display,tag=euchre.trick_card,y_rotation=-1..1]
+# ...at full brightness.
+assert entity @e[type=minecraft:item_display,tag=euchre.trick_card,nbt={brightness:{block:15,sky:15}}]
 execute store result score #n euchre.tmp run data get entity @e[type=minecraft:item_display,tag=euchre.trick_card,limit=1] transformation.left_rotation[0] 1000
 assert score #n euchre.tmp matches 700..710
 # East holds a club, so trumping with the right bower is refused.
