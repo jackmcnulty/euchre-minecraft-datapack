@@ -34,8 +34,8 @@ scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=3}]
 # West dealt, so North (left of the dealer) bids first. West's label says so.
 execute unless entity @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3}] run fail "no label for West"
-execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3}] unless data entity @s text[{text:"\nDealer"}] run fail "the dealer's seat label should say Dealer"
-execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0}] if data entity @s text[{text:"\nDealer"}] run fail "only the dealer's label says Dealer"
+execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3}] unless function euchre_test:label_says_dealer run fail [{text:"the dealer's seat label should say Dealer; it has: "},{entity:"@e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=3},limit=1]",nbt:"text"}]
+execute as @e[type=minecraft:text_display,tag=euchre.seat_label,scores={euchre.seat=0}] if function euchre_test:label_says_dealer run fail "only the dealer's label says Dealer"
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.dealer=3,euchre.turn=0}]
 
 # --- Bidding: North orders up hearts by pressing the chat button (/trigger) ---
