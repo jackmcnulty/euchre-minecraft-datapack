@@ -134,6 +134,8 @@ scoreboard players set @e[type=minecraft:marker,tag=euchre.table] euchre.timer 1
 execute store result score #n euchre.tmp run clear hn minecraft:debug_stick[custom_data~{euchre:{}}] 0
 assert score #n euchre.tmp matches 0
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=2,euchre.dealer=0}]
+# North's team made trump and took 3 tricks: 1 point.
+assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.pts0=1,euchre.pts1=0}]
 assert not entity @e[type=minecraft:item_display,tag=euchre.trick_card]
 
 # Clean up.

@@ -12,3 +12,7 @@ scoreboard players set @s euchre.tricks1 0
 scoreboard players set @s euchre.alone -1
 scoreboard players set @s euchre.maker -1
 scoreboard players set @s euchre.bids 0
+scoreboard players set @s euchre.resume 0
+scoreboard players set @s euchre.deadline 0
+scoreboard players set @s euchre.pts0 0
+scoreboard players set @s euchre.pts1 0

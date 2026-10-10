@@ -70,12 +70,10 @@ execute store success score #ok euchre.tmp run function euchre_test:has_cards {n
 execute if score #ok euchre.tmp matches 0 run fail "dx should hold no cards"
 dummy dx leave
 
-# A player leaving mid-game stops it and takes everyone's cards back.
+# A player disconnecting mid-game pauses it; their seat is held for them.
 dummy dw leave
-await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=0}]
-execute store success score #ok euchre.tmp run function euchre_test:has_cards {name:"dn",n:0}
-execute if score #ok euchre.tmp matches 0 run fail "dn should hold no cards after the abort"
-assert not entity @e[type=minecraft:item_display,tag=euchre.card_shown]
+await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=10,euchre.resume=3}]
+assert data storage euchre:tables list[0].seats[3].away
 
 # Clean up.
 execute positioned ~0.5 ~1 ~0.5 run function euchre:remove_table

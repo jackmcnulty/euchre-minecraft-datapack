@@ -118,6 +118,7 @@ OBJECTIVES = [
     ("euchre.pts1", "dummy"),
     ("euchre.timer", "dummy"),
     ("euchre.nonce", "dummy"),
+    ("euchre.deadline", "dummy"),
 ]
 
 
@@ -336,6 +337,16 @@ def ref_is_legal(cid: int, hand: list[int], trump: int, led: int | None) -> bool
     return not any(ref_eff_suit(c, trump) == led for c in hand)
 
 
+def ref_score_hand(maker_team: int, maker_tricks: int, alone: bool) -> tuple[int, int]:
+    """(team that scores, points): makers 3-4 tricks 1, all 5 tricks 2 (4 alone);
+    makers euchred (under 3 tricks) give the defenders 2."""
+    if maker_tricks < 3:
+        return 1 - maker_team, 2
+    if maker_tricks == 5:
+        return maker_team, 4 if alone else 2
+    return maker_team, 1
+
+
 def ref_trick_winner(trick: list[tuple[int, int]], trump: int) -> int:
     """trick: [(seat, card), ...] in play order. Returns the winning seat."""
     led = ref_eff_suit(trick[0][1], trump)
@@ -415,6 +426,19 @@ def gen_golden_tests() -> dict[Path, str]:
     # Guard against a degenerate sample (all legal or all illegal) slipping in.
     assert 30 < legal_count < 140, legal_count
     out[GOLDEN / "is_legal.mcfunction"] = "".join(lines)
+
+    lines = [gh, "# Hand scoring for every maker team, trick count and lone/partnered hand.\n"]
+    for team in (0, 1):
+        for tricks in range(6):
+            for alone in (False, True):
+                pteam, pts = ref_score_hand(team, tricks, alone)
+                lines.append(f"scoreboard players set #mteam euchre.tmp {team}\n")
+                lines.append(f"scoreboard players set #mtricks euchre.tmp {tricks}\n")
+                lines.append(f"scoreboard players set #alone euchre.tmp {int(alone)}\n")
+                lines.append("function euchre:rules/score_hand\n")
+                lines.append(f"assert score #pteam euchre.tmp matches {pteam}\n")
+                lines.append(f"assert score #pts euchre.tmp matches {pts}\n")
+    out[GOLDEN / "score_hand.mcfunction"] = "".join(lines)
     return out
 
 

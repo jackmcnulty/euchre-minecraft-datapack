@@ -8,6 +8,7 @@ tag @a remove euchre.notify
 scoreboard players reset @a euchre.act
 advancement revoke @a only euchre:seat_click
 schedule clear euchre:seat/deferred_check
+schedule clear euchre:heartbeat
 
 function euchre:gen/objectives_remove
 
@@ -20,6 +21,7 @@ data remove storage euchre:const seat_names
 data remove storage euchre:const seat_teams
 data remove storage euchre:const phase_names
 data remove storage euchre:const suit_symbols
+data remove storage euchre:const team_names
 data remove storage euchre:debug dealer
 advancement revoke @a only euchre:spot_click
 data remove storage euchre:debug rig

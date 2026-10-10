@@ -23,9 +23,11 @@ data modify storage euchre:defaults setup set value {wager:0,target:5,stick_deal
 data modify storage euchre:const seat_names set value ["North","East","South","West"]
 # Partners sit opposite each other: N/S are Team A, E/W are Team B.
 data modify storage euchre:const seat_teams set value ["Team A","Team B","Team A","Team B"]
+data modify storage euchre:const team_names set value ["Team A (North & South)","Team B (East & West)"]
 data modify storage euchre:const suit_symbols set value ["♣","♠","♦","♥"]
 # Display names for euchre.phase values (see docs/architecture.md).
 data modify storage euchre:const phase_names set value ["Waiting for players","Waiting for stakes","Shuffling","Bidding","Dealer discarding","Bidding, round 2","Playing","Trick taken","Hand over","Game over","Paused"]
 
 # --- Tables may have changed while the pack was unloaded; recount the active ones ---
 function euchre:recount_active
+schedule function euchre:heartbeat 100t
