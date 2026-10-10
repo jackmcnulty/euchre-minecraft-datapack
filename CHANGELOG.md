@@ -15,6 +15,7 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - All card-item commands are generated from one item definition in `tools/gen.py`.
 - **Trick play:** hold a card and right-click your spot. Turn order, card ownership (per storage) and phase are validated. Played cards lie face up on the table. The best card wins the trick (bowers, trump, led suit) and its player leads next.
 - **Rules engine:** pure scoreboard functions `rules/eff_suit`, `rules/power` and `rules/trick_winner`. They are checked by golden tests generated from a Python reference model: every card under every trump and led suit, plus 60 seeded random tricks.
+- **Bidding:** round 1 (order up or pass, then the dealer picks up and discards) and round 2 (name a suit other than the turned-down one, or pass). Stick-the-dealer or a redeal, depending on config. Choices are clickable chat buttons backed by `/trigger`, enabled only for the current bidder.
 - **Follow suit:** illegal plays are refused, and the left bower counts as trump. Covered by 150 generated follow-suit cases and hand-written left-bower edge cases.
 - Repository skeleton: datapack and resource pack (`pack.mcmeta` for 26.3, formats 121.0 / 97.1).
 - Idempotent `euchre:load`, near-zero-cost `euchre:tick`, `euchre:selftest`.

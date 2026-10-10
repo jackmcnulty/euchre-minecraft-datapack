@@ -2,7 +2,7 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: early development (M4 done: tables, seating, dealing, and rules-enforced trick play).** Until bidding lands, trump is the up card's suit. See the [roadmap](#roadmap).
+> **Status: early development (M5 done: tables, seating, dealing, bidding, and rules-enforced trick play).** Scoring and game end come next. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
 
@@ -40,7 +40,11 @@ The config is fixed while the table exists. To change it, remove the table and s
 
 **Sitting:** right-click a cushion. You need **5 empty hotbar slots**, because your cards are dealt there. Your own items are never moved. To get up, sneak.
 
-**Cards:** when all four seats are filled on a free table, the cards are shuffled and each player is dealt 5. The table's state is the source of truth: a card you drop or pass to someone comes back to your hand, and duplicates or leftover cards disappear. **Playing:** on your turn, hold a card and right-click the spot on the table in front of you. The card lies face up there; when everyone has played, the best card takes the trick and its player leads next. You must follow the led suit if you can, and the game refuses an illegal card with a message. Suits are effective suits: the left bower counts as trump.
+**Cards:** when all four seats are filled on a free table, the cards are shuffled and each player is dealt 5. The table's state is the source of truth: a card you drop or pass to someone comes back to your hand, and duplicates or leftover cards disappear. **Bidding:** when it's your turn to bid, clickable buttons appear in your chat, and only you can use them.
+- **Round 1:** order up the up card's suit or pass. If someone orders up, the dealer picks up the up card and discards one by holding it and right-clicking their spot.
+- **Round 2:** if everyone passed, name any other suit or pass. With `stick_dealer` on (the default), the dealer can't pass; with it off, four passes mean a redeal.
+
+**Playing:** on your turn, hold a card and right-click the spot on the table in front of you. The card lies face up there; when everyone has played, the best card takes the trick and its player leads next. You must follow the led suit if you can, and the game refuses an illegal card with a message. Suits are effective suits: the left bower counts as trump.
 
 For now, a player leaving mid-game stops the game. A grace period to return arrives with leaver handling.
 
