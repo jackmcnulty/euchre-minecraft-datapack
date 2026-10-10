@@ -16,6 +16,7 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - **Trick play:** hold a card and right-click your spot. Turn order, card ownership (per storage) and phase are validated. Played cards lie face up on the table. The best card wins the trick (bowers, trump, led suit) and its player leads next.
 - **Rules engine:** pure scoreboard functions `rules/eff_suit`, `rules/power` and `rules/trick_winner`. They are checked by golden tests generated from a Python reference model: every card under every trump and led suit, plus 60 seeded random tricks.
 - **Bidding:** round 1 (order up or pass, then the dealer picks up and discards) and round 2 (name a suit other than the turned-down one, or pass). Stick-the-dealer or a redeal, depending on config. Choices are clickable chat buttons backed by `/trigger`, enabled only for the current bidder.
+- **Wagers:** an ante with chat confirmation and atomic all-or-nothing collection of plain diamonds, held in per-table escrow. Winners split the recorded pot. Aborts, removal and uninstall refund every stake. Offline players get pending payouts on rejoin, and overflow drops are owner-only and never despawn. A ledger invariant is checked after every change and freezes wagering on a mismatch. Includes a 256-entry audit log and admin tools (`abort`, `admin/inspect`, `pending_list`, `audit_log`, `notify_on/off`, `unfreeze`, `release_pending`). See docs/escrow.md.
 - **Going alone:** order up or name trump alone. The partner sits out, tricks have three cards, and a lone march scores 4. If the dealer is the one sitting out, the up card is turned down.
 - **Scoring and game end:** 1 / 2 / 4 points, or 2 to the defenders when the makers are euchred. Play continues to the table's target, the game-over pause is followed by a new game, and scoring has golden tests.
 - **Leavers:** a player leaving mid-game pauses the game and their seat is held, matched by UUID. Sitting back down resumes the game and restores their hand. After the grace period their team forfeits, or the game is cancelled if both teams have leavers. This also covers server restarts.
@@ -26,6 +27,7 @@ All notable changes to this project are documented here. Format: [Keep a Changel
 - CI: lint, PackTest suite on Fabric 26.3, vanilla server smoke test. Tag-triggered release workflow.
 
 ### Fixed
+- Delivering one player's pending payout could falsely trip the ledger check while others were still pending.
 - The game-over pause was skipped: the phase timer dispatched twice in one tick. A lint rule now flags dispatch tables without returns.
 - Table geometry no longer overflows score limits for tables more than ~21 million blocks from spawn.
 - The plain-diamond predicate matched no diamonds: default components are now compared by value.

@@ -2,7 +2,7 @@
 
 A fully rules-enforcing game of **Euchre** for Minecraft Java Edition **26.3**. It's played at a table you build yourself in a survival world, as a vanilla **datapack** with a companion resource pack for the card art. You can play for free or stake diamonds held in auditable escrow.
 
-> **Status: free tables are fully playable, including going alone (M7).** Wagers and card art are next. See the [roadmap](#roadmap).
+> **Status: fully playable, free or wagered (M8).** Card art and polish are next. See the [roadmap](#roadmap).
 
 <!-- TODO(M10): demo GIF -->
 
@@ -51,9 +51,15 @@ The config is fixed while the table exists. To change it, remove the table and s
 
 **Leaving mid-game:** if a player stands up or disconnects, the game pauses and their seat is held. They resume by sitting back down on their cushion, and their cards come back. If they aren't back within `grace_s` seconds (default 120), their team forfeits. If players from both teams are away, the game is cancelled instead. A server restart works the same way: the game resumes when everyone is back.
 
+### Wagered tables
+
+On a table with a `wager`, the four players confirm their stakes in chat before the first deal. Collection is all-or-nothing: if anyone is short, nobody pays. The winning team splits the pot, and every stake is refunded if the game is cancelled. Diamonds owed to offline players are delivered when they return. Only unmodified diamonds count. See **[docs/escrow.md](docs/escrow.md)** for the full rules, safety mechanisms and admin tools.
+
 ### Operator commands
 | Command | What it does |
 |---|---|
+| `/function euchre:abort` | Cancels the game at the nearest table and refunds every stake. |
+| `/function euchre:admin/inspect` | Shows the escrow ledger and the nearest table's state. More admin tools are listed in [docs/escrow.md](docs/escrow.md). |
 | `/function euchre:remove_table` | Removes the nearest table (within 8 blocks). Seated players are stood up and the cushions are released. |
 | `/function euchre:rebind` | A cushion was broken: place a new one on the same side and run this. |
 | `/function euchre:uninstall` | Removes all Euchre data. It refuses while diamonds are held or owed. Afterwards, run `/datapack disable` on the pack. |
