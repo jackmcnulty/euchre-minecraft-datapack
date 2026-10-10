@@ -47,5 +47,7 @@ also note what the design falls back to.
   before the entity moves. Even with both set, summoned cushions disappear at their first support check,
   about 100 ticks after loading; cushions placed by players don't. The datapack never summons cushions,
   so play is unaffected, but table tests keep their seated phase within 100 ticks. **Open question for a
-  future spike:** what makes a placed cushion valid that a summoned one lacks (compare `/data get entity`
-  of a placed cushion).
+  future spike:** what makes a placed cushion valid that a summoned one lacks. A placed cushion's data
+  (QA, 2026-10-09) is `{block_pos:[I;-4,-60,-50], Pos:[-3.5d,-60.0d,-49.5d], color:"white", OnGround:0b, …}`:
+  `block_pos` is its own block, and `Pos` is that block's centre at floor level. The fixture already summons
+  exactly that, so the difference is in how the entity is created, not in its saved data. Still open.

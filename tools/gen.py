@@ -73,7 +73,10 @@ CARD_PREDICATE = f"{CARD_BASE_ITEM}[custom_data~{{euchre:{{}}}}]"
 CARD_ITEM = (
     f"{CARD_BASE_ITEM}["
     "custom_data={euchre:{card:$(id),tid:$(tid),nonce:$(nonce)}},"
-    'custom_name={text:"$(name)",color:"$(color)",italic:false},'
+    # item_name, not custom_name: it shows in the hotbar and tooltip like a
+    # custom name, but item frames don't display it (they only show custom
+    # names), so a framed card doesn't reveal itself. Found in QA.
+    'item_name={text:"$(name)",color:"$(color)"},'
     'item_model="euchre:card_$(id)",'
     "enchantment_glint_override=false,max_stack_size=1]"
 )
@@ -247,6 +250,11 @@ def gen_card_helpers() -> dict[Path, str]:
             "# someone else and any lying on the ground (dropped, thrown, or left over).\n"
             f"clear @a[tag=!euchre.seated] {CARD_PREDICATE}\n"
             f"execute as @e[type=minecraft:item] if items entity @s contents {CARD_PREDICATE} run kill @s\n"
+            "# Also anything a card can be put into without picking it up again: item\n"
+            "# frames, and the hands of armor stands and item-carrying mobs.\n"
+            f"execute as @e[type=#euchre:card_holders] if items entity @s contents {CARD_PREDICATE} run item replace entity @s contents with minecraft:air\n"
+            f"execute as @e[type=#euchre:card_holders] if items entity @s weapon.mainhand {CARD_PREDICATE} run item replace entity @s weapon.mainhand with minecraft:air\n"
+            f"execute as @e[type=#euchre:card_holders] if items entity @s weapon.offhand {CARD_PREDICATE} run item replace entity @s weapon.offhand with minecraft:air\n"
         ),
     }
     return {gen / f"{name}.mcfunction": HEADER + body for name, body in files.items()}

@@ -3,3 +3,8 @@
 # someone else and any lying on the ground (dropped, thrown, or left over).
 clear @a[tag=!euchre.seated] minecraft:debug_stick[custom_data~{euchre:{}}]
 execute as @e[type=minecraft:item] if items entity @s contents minecraft:debug_stick[custom_data~{euchre:{}}] run kill @s
+# Also anything a card can be put into without picking it up again: item
+# frames, and the hands of armor stands and item-carrying mobs.
+execute as @e[type=#euchre:card_holders] if items entity @s contents minecraft:debug_stick[custom_data~{euchre:{}}] run item replace entity @s contents with minecraft:air
+execute as @e[type=#euchre:card_holders] if items entity @s weapon.mainhand minecraft:debug_stick[custom_data~{euchre:{}}] run item replace entity @s weapon.mainhand with minecraft:air
+execute as @e[type=#euchre:card_holders] if items entity @s weapon.offhand minecraft:debug_stick[custom_data~{euchre:{}}] run item replace entity @s weapon.offhand with minecraft:air

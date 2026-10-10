@@ -70,6 +70,13 @@ execute store success score #ok euchre.tmp run function euchre_test:has_cards {n
 execute if score #ok euchre.tmp matches 0 run fail "dx should hold no cards"
 dummy dx leave
 
+# A card put on an armor stand (or in an item frame) is removed too.
+summon minecraft:armor_stand ~2 ~ ~2 {Tags:["euchre_test.stand"]}
+item replace entity @e[type=minecraft:armor_stand,tag=euchre_test.stand,limit=1] weapon.mainhand with minecraft:debug_stick[custom_data={euchre:{card:4,tid:1,nonce:1}}]
+await delay 21
+execute if items entity @e[type=minecraft:armor_stand,tag=euchre_test.stand,limit=1] weapon.mainhand minecraft:debug_stick run fail "a card on an armor stand should be swept"
+kill @e[type=minecraft:armor_stand,tag=euchre_test.stand]
+
 # A player disconnecting mid-game pauses it; their seat is held for them.
 dummy dw leave
 await entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=10,euchre.resume=3}]

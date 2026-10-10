@@ -42,10 +42,10 @@ Note: in single player with cheats on, you're an operator, so admin commands wor
 - [ ] **2.2** Repeat with `card_14` (J♦), `card_0` (9♣) and `card_10` (K♠). Each shows the right card, with red suits red and black suits dark.
 - [ ] **2.3** Hold a card and press **F5** twice (third person, front). Your hand shows the **blue back**.
 - [ ] **2.4** Press **Q** to drop one. On the ground it shows the **back**.
-- [ ] **2.5** Place an item frame and put a card in it. It shows the **back**.
-- [ ] **2.6** Run `/summon minecraft:item_display ~ ~1 ~ {item:{id:"minecraft:debug_stick",count:1,components:{"minecraft:item_model":"euchre:card_face_23"}}}`. It shows the **face**. (The table uses this model and lays it flat.)
+- [ ] **2.5** Place an item frame and put a card in it. It shows the **back**, and looking at it shows **no name**. (Real cards are named with `item_name`, which item frames don't display. A test card from step 2.1 uses `custom_name`, so it does show its name; that's expected.)
+- [ ] **2.6** Run `/summon minecraft:item_display ~ ~1 ~ {item:{id:"minecraft:debug_stick",count:1,components:{"minecraft:item_model":"euchre:card_face_23"}}}`. It shows the **face**. In your hand the two models look the same; they differ only where others look. `card_23` (held cards) shows the back in third person, on the ground and in frames, while `card_face_23` (cards on the table) always shows the face. Try the same command with `card_23`: it shows the **back**.
 - [ ] **2.7** Disable the resource pack (Options → Resource Packs), look at a card, then re-enable it. Without the pack, the card looks like a missing texture but its name still shows when you hover over it.
-- [ ] **2.8** Clean up: `/kill @e[type=minecraft:item_display]`, `/kill @e[type=minecraft:item]`, `/clear @s`.
+- [ ] **2.8** Clean up: `/kill @e[type=minecraft:item_display]` (floating cards from 2.6), `/kill @e[type=minecraft:item_frame]` (the frame from 2.5), `/kill @e[type=minecraft:item]` (anything still on the ground; *"No entity was found"* is fine) and `/clear @s`.
 
 ## 3. Building a table, and setup validation
 
