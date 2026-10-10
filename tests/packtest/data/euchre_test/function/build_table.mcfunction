@@ -1,10 +1,10 @@
 # Fixture: a 1x1 table with a cushion on each side, built around the test origin.
 #   floor (y-1): 3x3 smooth stone; table block at the origin; cushions N/E/S/W.
-# Two steps, because force-loaded chunks only load on the next tick (summoning
-# into a chunk that isn't loaded yet silently does nothing):
+# Two steps, because force-loaded chunks load a few ticks later (summoning into
+# a chunk that isn't loaded yet silently does nothing):
 #   function euchre_test:build_table
-#   await delay 1
-#   function euchre_test:place_cushions   (then check #cushions euchre.tmp is 4)
+#   await score #loaded euchre.tmp matches 1   (area_loaded polls and sets it)
+#   function euchre_test:place_cushions        (then check #cushions euchre.tmp is 4)
 # Callers run setup positioned on the tabletop: ~0.5 ~1 ~0.5.
 #
 # The fixture can straddle a chunk border; GameTest only guarantees the test's own
@@ -13,3 +13,6 @@
 forceload add ~-2 ~-2 ~2 ~2
 fill ~-1 ~-1 ~-1 ~1 ~-1 ~1 minecraft:smooth_stone
 setblock ~ ~ ~ minecraft:oak_planks
+scoreboard players set #loaded euchre.tmp 0
+summon minecraft:marker ~ ~ ~ {Tags:["euchre_test.origin"]}
+function euchre_test:area_loaded

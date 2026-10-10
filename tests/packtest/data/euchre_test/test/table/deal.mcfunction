@@ -4,7 +4,7 @@
 await not data storage euchre_test:lock {held:1b}
 function euchre_test:lock
 function euchre_test:build_table
-await delay 1
+await score #loaded euchre.tmp matches 1
 function euchre_test:place_cushions
 execute unless score #cushions euchre.tmp matches 4 run fail [{text:"fixture placed "},{score:{name:"#cushions",objective:"euchre.tmp"}},{text:" cushions, expected 4"}]
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
