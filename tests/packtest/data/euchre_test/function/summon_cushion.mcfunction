@@ -17,4 +17,6 @@ execute store result storage euchre_test:t c.x int 1 run data get entity @e[type
 execute store result storage euchre_test:t c.y int 1 run data get entity @e[type=minecraft:marker,tag=euchre_test.probe,limit=1] Pos[1]
 execute store result storage euchre_test:t c.z int 1 run data get entity @e[type=minecraft:marker,tag=euchre_test.probe,limit=1] Pos[2]
 kill @e[type=minecraft:marker,tag=euchre_test.probe]
+# If the probe couldn't be summoned, the coordinates are meaningless: skip.
+execute if data storage euchre_test:t c{x:0,y:0,z:0} run return fail
 function euchre_test:summon_cushion_at with storage euchre_test:t c

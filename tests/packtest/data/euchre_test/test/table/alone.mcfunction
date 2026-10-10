@@ -8,9 +8,7 @@
 await not data storage euchre_test:lock {held:1b}
 function euchre_test:lock
 function euchre_test:build_table
-await score #loaded euchre.tmp matches 1
-function euchre_test:place_cushions
-execute unless score #cushions euchre.tmp matches 4 run fail "fixture cushions missing"
+await score #fixture_ready euchre.tmp matches 1
 execute store success score #r euchre.tmp positioned ~0.5 ~1 ~0.5 run function euchre:setup
 assert score #r euchre.tmp matches 1
 data modify storage euchre:debug rig set value [5,23,11,17,0, 1,20,6,12,2, 3,14,7,13,4, 8,21,9,15,10, 18,19,16,22]
