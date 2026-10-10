@@ -9,6 +9,7 @@ Rules (each one protects an invariant from the design docs):
               give them (the escrow choke points; see docs/escrow.md)
   cushions    cushions are player-owned: nothing may kill them
   overflow    entity positions are never scaled by more than 10 into a score
+  nbt-path    no `list[0]{filter}` paths (invalid in Minecraft)
   syntax      quotes and brackets balance on every command line
   dispatch    phase dispatch tables return after the first matching handler
   refs        every `function euchre:...` reference resolves to a file
@@ -46,6 +47,9 @@ RE_FUNC_REF = re.compile(r"\bfunction (euchre(?:_test)?):([a-z0-9_/.-]+)")
 RE_KILL_CUSHION = re.compile(r"\bkill\b.*cushion")
 # `data get ... Pos[i] <scale>` into a 32-bit score: coordinates reach +-30,000,000,
 # so any scale above 10 can overflow (x100 breaks past ~21.4M blocks).
+# An NBT path can't follow a list index with a compound filter (`list[0]{a:1}`);
+# Minecraft rejects the whole function at load time. Copy the element out first.
+RE_INDEX_FILTER = re.compile(r"\[-?\d+\]\{")
 RE_POS_SCALE = re.compile(r"\bPos\[\d\]\s+(\d+(?:\.\d+)?)")
 
 errors: list[str] = []
@@ -152,6 +156,9 @@ def check_mcfunctions() -> None:
             for ns in RE_STORAGE.findall(body):
                 if ns not in ("euchre", "euchre_test"):
                     err(p, n, "prefix", f"storage namespace '{ns}' must be euchre")
+
+            if RE_INDEX_FILTER.search(body):
+                err(p, n, "nbt-path", "a list index can't be followed by a {filter} in an NBT path")
 
             for scale in RE_POS_SCALE.findall(body):
                 if float(scale) > 10:

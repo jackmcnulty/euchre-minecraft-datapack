@@ -38,7 +38,8 @@ execute if score #ok euchre.tmp matches 0 run fail [{text:"short ante: ws has "}
 execute store success score #ok euchre.tmp run function euchre_test:plain_diamonds {name:"ww",n:5}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"short ante: ww has "},{score:{name:"#pd",objective:"euchre.tmp"}},{text:" plain diamonds, expected 5"}]
 assert entity @e[type=minecraft:marker,tag=euchre.table,scores={euchre.phase=1,euchre.pot=0}]
-assert data storage euchre:tables list[0]{ante:[0b,0b,0b,0b]}
+data modify storage euchre_test:t tb set from storage euchre:tables list[0]
+assert data storage euchre_test:t tb{ante:[0b,0b,0b,0b]}
 execute store success score #ok euchre.tmp run function euchre_test:ledger_delta {c:0,d:0,h:0,o:0}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"short ante: ledger moved by collected "},{score:{name:"#dc",objective:"euchre.tmp"}},{text:" delivered "},{score:{name:"#dd",objective:"euchre.tmp"}},{text:" held "},{score:{name:"#dh",objective:"euchre.tmp"}},{text:" owed "},{score:{name:"#do",objective:"euchre.tmp"}},{text:"; expected 0/0/0/0 and a balanced ledger"}]
 

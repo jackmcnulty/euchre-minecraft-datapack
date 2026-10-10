@@ -2,6 +2,7 @@
 # Players from both teams disconnect mid-game and don't return: the game is
 # cancelled. Online players are refunded at once; offline ones are owed their
 # stake as a pending payout, delivered when they log back in.
+# (Rejoin detection itself is vanilla's leave_game statistic, verified in-game.)
 await not data storage euchre_test:lock {held:1b}
 function euchre_test:lock
 function euchre_test:build_table
@@ -46,10 +47,17 @@ assert score #n euchre.tmp matches 2..
 execute store success score #ok euchre.tmp run function euchre_test:ledger_delta {c:40,d:20,h:0,o:20}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"after refunds with two players offline: ledger moved by collected "},{score:{name:"#dc",objective:"euchre.tmp"}},{text:" delivered "},{score:{name:"#dd",objective:"euchre.tmp"}},{text:" held "},{score:{name:"#dh",objective:"euchre.tmp"}},{text:" owed "},{score:{name:"#do",objective:"euchre.tmp"}},{text:"; expected 40/20/0/20 and a balanced ledger"}]
 
-# They come back (same name, so same offline-mode UUID) and are paid.
+# They come back and are paid. A real player keeps their UUID across sessions;
+# PackTest dummies get a fresh one, so point the pending entries at the new
+# dummies to stand in for that, then run the delivery a rejoin triggers.
 execute positioned ~0.5 ~1 ~0.5 run dummy on spawn
 execute positioned ~0.5 ~1 ~0.5 run dummy oe spawn
-await score #owed euchre.g <= #s_owed euchre.tmp
+data modify storage euchre:pending list[{name:"on"}].uuid set from entity on UUID
+data modify storage euchre:pending list[{name:"oe"}].uuid set from entity oe UUID
+execute as on at on run function euchre:escrow/deliver_pending
+execute as oe at oe run function euchre:escrow/deliver_pending
+assert not data storage euchre:pending list[{name:"on"}]
+assert not data storage euchre:pending list[{name:"oe"}]
 execute store success score #ok euchre.tmp run function euchre_test:plain_diamonds {name:"on",n:10}
 execute if score #ok euchre.tmp matches 0 run fail [{text:"pending delivered on rejoin: on has "},{score:{name:"#pd",objective:"euchre.tmp"}},{text:" plain diamonds, expected 10"}]
 execute store success score #ok euchre.tmp run function euchre_test:plain_diamonds {name:"oe",n:10}
